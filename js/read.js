@@ -40,7 +40,7 @@
         var topTitle = document.getElementById('topTitle');
 
         // 显示加载中
-        main.innerHTML = '<div class="read-404"><h2>⏳ 加载中...</h2><p>正在获取文章内容</p></div>';
+        main.innerHTML = '<div class="read-404"><h2>加载中...</h2><p>正在获取文章内容</p></div>';
 
         getPost(id, function(post) {
             if (!post) {
@@ -93,11 +93,11 @@
             }
 
             // 元信息
-            var metaHTML = '<span class="article-meta-item">📅 ' + safeHTML(post.date) + '</span>'
+            var metaHTML = '<span class="article-meta-item">日期 ' + safeHTML(post.date) + '</span>'
                 + '<span class="article-meta-sep">│</span>'
-                + '<span class="article-meta-item">✍️ Omiaちゃん</span>'
+                + '<span class="article-meta-item">作者 Omiaちゃん</span>'
                 + '<span class="article-meta-sep">│</span>'
-                + '<span class="article-meta-item">📖 ' + getReadingLen(post.content) + '</span>';
+                + '<span class="article-meta-item">篇幅 ' + getReadingLen(post.content) + '</span>';
 
             // 渲染
             main.innerHTML = '<article>'
@@ -113,8 +113,8 @@
             // 底栏
             footer.innerHTML = '<span class="read-footer-note">© sunZshanY.inc · CC BY-NC-SA 4.0</span>'
                 + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
-                + '<button class="read-footer-btn" onclick="copyLink()">📋 复制链接</button>'
-                + '<a href="index.html" class="read-footer-btn">🏠 返回首页</a>'
+                + '<button class="read-footer-btn" onclick="copyLink()">复制链接</button>'
+                + '<a href="home.html" class="read-footer-btn">返回首页</a>'
                 + '</div>';
             footer.style.display = '';
         });
@@ -123,10 +123,9 @@
     function show404() {
         var main = document.getElementById('articleContent');
         var footer = document.getElementById('articleFooter');
-        main.innerHTML = '<div class="read-404">'
-            + '<h2>😢 文章未找到</h2>'
+        main.innerHTML = '<div class="read-404"><h2>文章未找到</h2>'
             + '<p>这篇文章可能已被删除，或者链接地址不正确。</p>'
-            + '<a href="index.html" class="read-footer-btn">← 返回首页</a>'
+            + '<a href="home.html" class="read-footer-btn">← 返回首页</a>'
             + '</div>';
         if (footer) footer.style.display = 'none';
         document.title = '404 — Omiaちゃん的小博客';
@@ -136,7 +135,7 @@
     window.copyLink = function() {
         navigator.clipboard.writeText(location.href).then(function() {
             var btn = document.querySelector('.read-footer-btn');
-            if (btn) { var t = btn.textContent; btn.textContent = '✅ 已复制'; setTimeout(function(){ btn.textContent = t; }, 1800); }
+            if (btn) { var t = btn.textContent; btn.textContent = '已复制'; setTimeout(function(){ btn.textContent = t; }, 1800); }
         }).catch(function() {
             alert('复制失败，请手动复制地址栏链接');
         });

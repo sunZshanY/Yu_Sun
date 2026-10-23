@@ -5,72 +5,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - 页面未找到 | Omiaちゃん的小博客</title>
+  <link rel="icon" href="images/misaka.jpg" type="image/jpeg">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --hue: 268;
+      --accent: oklch(0.62 0.19 var(--hue));
+      --accent-soft: oklch(0.62 0.19 var(--hue) / 0.12);
+      --card: oklch(0.23 0.02 var(--hue));
+      --text: oklch(0.93 0.01 var(--hue));
+      --muted: oklch(0.62 0.015 var(--hue));
+      --bg: oklch(0.17 0.016 var(--hue));
     }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #1a1a2e;
-      font-family: 'JetBrains Mono', 'SimHei', '黑体', sans-serif;
+      background: var(--bg);
+      font-family: 'Inter', 'JetBrains Mono', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
     }
-
     .container {
       text-align: center;
-      padding: 40px;
+      padding: 46px 40px;
+      max-width: 460px;
+      background: var(--card);
+      border: 1px solid oklch(0.30 0.02 var(--hue));
+      border-radius: 20px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
     }
-
-    .emoji {
-      font-size: 80px;
-      margin-bottom: 20px;
-    }
-
     h1 {
-      font-size: 72px;
-      color: #667eea;
+      font-size: 46px;
+      font-weight: 800;
+      color: var(--accent);
       margin-bottom: 10px;
-      text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
     }
-
-    p {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
-      margin-bottom: 30px;
-      line-height: 1.8;
-    }
-
+    p { color: var(--muted); font-size: 15px; margin-bottom: 30px; line-height: 1.8; }
     .back-btn {
       display: inline-block;
-      padding: 14px 32px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 12px 30px;
+      background: var(--accent);
       color: #fff;
       text-decoration: none;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 650;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 12px var(--accent-soft);
     }
-
-    .back-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-    }
+    .back-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 22px var(--accent-soft); }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>404 ERROR</h1>
+    <h1>404</h1>
     <p>当前页面丢失了喵，可能是被移除或地址有误呢喵~</p>
-    <a href="https://www.bilibili.com/video/BV1844y1m7C5/?spm_id_from=333.1391.0.0&vd_source=7c847222bc0c98bdec924409f34d4677"
-      class="back-btn">返回首页喵~</a>
+    <a href="home.html" class="back-btn">返回首页喵~</a>
   </div>
 </body>
 

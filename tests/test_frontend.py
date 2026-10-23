@@ -55,7 +55,7 @@ class FrontendTests(unittest.TestCase):
         self.context.close()
         self.assertEqual(self.errors, [], "Unexpected browser JavaScript errors")
 
-    def goto(self, path="index.html"):
+    def goto(self, path="home.html"):
         self.page.goto(self.origin + "/" + path, wait_until="domcontentloaded")
 
     def theme(self, page, mode):
@@ -121,8 +121,8 @@ class FrontendTests(unittest.TestCase):
 
     def test_discussion_links_and_sign_in_return_open_panel(self):
         self.giscus_stub()
-        for path in ['index.html#discussion', 'index.html#discussionComments',
-                     'index.html#comments', 'index.html?giscus=test-session']:
+        for path in ['home.html#discussion', 'home.html#discussionComments',
+                     'home.html#comments', 'home.html?giscus=test-session']:
             with self.subTest(path=path):
                 self.goto(path)
                 expect(self.page.locator('#discussion')).to_be_visible()
@@ -140,7 +140,7 @@ class FrontendTests(unittest.TestCase):
         expect(self.page.locator('script[src*="fakeicp"]')).to_have_count(0)
 
     def test_sliding_thumb_and_keyboard_on_both_pages(self):
-        for path in ["index.html", "read.html?post=1"]:
+        for path in ["home.html", "read.html?post=1"]:
             with self.subTest(path=path):
                 self.goto(path)
                 self.theme(self.page, "light")
@@ -213,7 +213,7 @@ class FrontendTests(unittest.TestCase):
         self.page.emulate_media(reduced_motion="reduce")
         for width in [320, 375, 480, 768, 1440]:
             self.page.set_viewport_size({"width": width, "height": 850})
-            for path in ["index.html", "read.html?post=1"]:
+        for path in ["home.html", "read.html?post=1"]:
                 with self.subTest(width=width, path=path):
                     self.goto(path)
                     self.page.get_by_role("button", name="深色主题", exact=True).click()
@@ -238,7 +238,7 @@ class FrontendTests(unittest.TestCase):
         self.context.add_init_script("""for (const key of ['localStorage', 'sessionStorage']) {
             Object.defineProperty(window, key, {get() { throw new DOMException('Blocked', 'SecurityError'); }});
         }""")
-        for path, selector in [("index.html", ".blog-card"), ("read.html?post=1", ".article-title")]:
+        for path, selector in [("home.html", ".blog-card"), ("read.html?post=1", ".article-title")]:
             self.goto(path)
             expect(self.page.locator(selector).first).to_be_visible()
             self.page.get_by_role("button", name="深色主题", exact=True).click()
@@ -285,6 +285,16 @@ class FrontendTests(unittest.TestCase):
         finally:
             for route in pending_routes:
                 route.abort()
+
+
+    def test_splash_screen_shows_greeting_and_enters_home(self):
+        self.goto("index.html")
+        expect(self.page.locator(".title")).to_have_text("Hello My name is Yu Sun")
+        expect(self.page.locator(".welcome")).to_have_text("欢迎来到我的网页")
+        self.page.mouse.click(5, 5)
+        expect(self.page.locator(".rinui-topbar")).to_be_visible()
+        expect(self.page.locator(".hero-title")).to_have_text("こんにちは、ようこそう私のWebsite")
+        expect(self.page.locator(".hero-subtitle")).to_have_text("欢迎来到我的网页")
 
 
 if __name__ == "__main__":

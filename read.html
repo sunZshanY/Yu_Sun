@@ -19,10 +19,13 @@
     <link rel="stylesheet" href="css/read.css">
 </head>
 <body>
+    <!-- 背景层（与首页一致的壁纸） -->
+    <div class="bg-layer" id="bgLayer" aria-hidden="true"></div>
+    <div class="bg-overlay" aria-hidden="true"></div>
     <!-- 极简顶栏 -->
     <header class="read-topbar">
         <div class="read-top-left">
-            <a href="index.html" class="read-back">
+            <a href="home.html" class="read-back">
                 <span class="read-back-arrow">←</span> 返回首页
             </a>
             <span class="read-top-title" id="topTitle">Omiaちゃん的小博客</span>
@@ -56,6 +59,17 @@
 
     <script src="js/services/posts.js" defer></script>
     <script src="js/read.js" defer></script>
+    <script>
+        // 阅读页背景壁纸（与首页一致的本地壁纸集）
+        (function () {
+            var wallpapers = ['images/哥伦比亚.jpg', 'images/我推的孩子.jpg', 'images/火花.jpg', 'images/庄方宜.jpg'];
+            var bg = document.getElementById('bgLayer');
+            if (bg) {
+                bg.style.backgroundImage = "url('" + wallpapers[Math.floor(Math.random() * wallpapers.length)] + "')";
+                bg.style.opacity = '1';
+            }
+        })();
+    </script>
 
 </body>
 </html>

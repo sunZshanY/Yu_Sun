@@ -1,66 +1,80 @@
-/* ---------- 设计令牌：浅色（默认） ---------- */
+/* ==========================================================================
+   Omiaちゃん Blog — 设计令牌 (Mizuki 风格 Material Design 3)
+   参考 Mizuki 主题：OKLCH 色相驱动 + MD3 大圆角 + 柔和表面
+   ========================================================================== */
+
 :root {
-    /* 材质 / 表面 */
-    --rinui-bg:          #FAFAFA;
-    --rinui-surface:     #FFFFFF;
-    --rinui-surface-2:   #F5F5F7;
-    --rinui-surface-3:   #EEEEF1;
-    --rinui-topbar:      rgba(255, 255, 255, 0.78);
-    --rinui-sidebar:     rgba(250, 250, 250, 0.82);
-    --rinui-statusbar:   rgba(255, 255, 255, 0.78);
-    --rinui-card:        rgba(255, 255, 255, 0.90);
-    --rinui-card-hov:    #FFFFFF;
-    --rinui-overlay:     rgba(250, 250, 250, 0.80);
-    --rinui-veil:        rgba(31, 35, 40, 0.40);
+    /* 主题色相（0-360，参考 Mizuki 的 --hue 设计，默认靛蓝） */
+    --hue: 268;
 
-    /* 边框 */
-    --rinui-border:       #EAEAEE;
-    --rinui-border-hov:   #D8D9E0;
-    --rinui-border-strong:#C4C6CE;
+    /* ---------- 材质 / 表面（OKLCH 色相微染，参考 Mizuki variables.styl） ---------- */
+    --rinui-bg:          oklch(0.965 0.008 var(--hue));
+    --rinui-surface:     oklch(1 0 0);
+    --rinui-surface-2:   oklch(0.945 0.012 var(--hue));
+    --rinui-surface-3:   oklch(0.915 0.018 var(--hue));
+    --rinui-topbar:      rgba(255, 255, 255, 0.72);
+    --rinui-sidebar:     transparent;
+    --rinui-statusbar:   rgba(255, 255, 255, 0.72);
+    --rinui-card:        oklch(1 0 0);
+    --rinui-card-hov:    oklch(0.985 0.006 var(--hue));
+    --rinui-overlay:     rgba(250, 250, 252, 0.80);
+    --rinui-veil:        oklch(0.30 0.03 var(--hue) / 0.45);
+    /* 悬浮面板 / 毛玻璃卡片（参考 Mizuki --card-bg-transparent） */
+    --rinui-card-transparent: rgba(255, 255, 255, 0.82);
+    --rinui-float-panel: oklch(1 0 0);
 
-    /* 强调色（两种模式通用） */
-    --rinui-accent:       #6366F1;
-    --rinui-accent-hover: #818CF8;
-    --rinui-accent-soft:  rgba(99, 102, 241, 0.10);
-    --rinui-accent-line:  rgba(99, 102, 241, 0.35);
+    /* ---------- 边框 ---------- */
+    --rinui-border:       oklch(0.90 0.01 var(--hue) / 0.9);
+    --rinui-border-hov:   oklch(0.86 0.015 var(--hue));
+    --rinui-border-strong:oklch(0.78 0.03 var(--hue));
+
+    /* ---------- 强调色（OKLCH 同 Mizuki） ---------- */
+    --rinui-accent:       oklch(0.62 0.19 var(--hue));
+    --rinui-accent-hover: oklch(0.70 0.16 var(--hue));
+    --rinui-accent-soft:  oklch(0.62 0.19 var(--hue) / 0.10);
+    --rinui-accent-line:  oklch(0.62 0.19 var(--hue) / 0.35);
     --rinui-on-accent:    #FFFFFF;
-    --rinui-active:       rgba(99, 102, 241, 0.12);
-    --rinui-tag-text:     #4F46E5;
-    --rinui-tag-bg:       rgba(99, 102, 241, 0.09);
+    --rinui-active:       oklch(0.62 0.19 var(--hue) / 0.13);
+    --rinui-tag-text:     oklch(0.55 0.15 var(--hue));
+    --rinui-tag-bg:       oklch(0.62 0.19 var(--hue) / 0.09);
 
-    /* 文本 */
-    --rinui-text:         #1F2328;
-    --rinui-text-reg:     #2A2E35;
-    --rinui-text-sub:     #4A4F57;
-    --rinui-text-muted:   #7A8089;
-    --rinui-text-stat:    #8A9099;
-    --rinui-text-dis:     #A5ABB4;
-    --rinui-text-ver:     #B0B5BD;
+    /* ---------- 文本 ---------- */
+    --rinui-text:         oklch(0.24 0.02 var(--hue));
+    --rinui-text-reg:     oklch(0.30 0.02 var(--hue));
+    --rinui-text-sub:     oklch(0.42 0.02 var(--hue));
+    --rinui-text-muted:   oklch(0.55 0.015 var(--hue));
+    --rinui-text-stat:    oklch(0.58 0.015 var(--hue));
+    --rinui-text-dis:     oklch(0.68 0.01 var(--hue));
+    --rinui-text-ver:     oklch(0.72 0.01 var(--hue));
+    /* 深色文本（用于横幅上的文字） */
+    --rinui-deep-text:    oklch(0.25 0.02 var(--hue));
 
-    /* 语义色 */
-    --rinui-green:        #16A34A;
-    --rinui-red:          #DC2626;
-    --rinui-gold:         #D97706;
-    --rinui-green-soft:   rgba(22, 163, 74, 0.10);
-    --rinui-red-soft:     rgba(220, 38, 38, 0.10);
-    --rinui-gold-soft:    rgba(217, 119, 6, 0.10);
+    /* ---------- 语义色 ---------- */
+    --rinui-green:        oklch(0.62 0.15 152);
+    --rinui-red:          oklch(0.58 0.20 25);
+    --rinui-gold:         oklch(0.68 0.15 75);
+    --rinui-green-soft:   oklch(0.62 0.15 152 / 0.12);
+    --rinui-red-soft:     oklch(0.58 0.20 25 / 0.12);
+    --rinui-gold-soft:    oklch(0.68 0.15 75 / 0.12);
 
-    /* 字体 */
+    /* ---------- 字体 ---------- */
     --font-cn:    'Inter', system-ui, -apple-system, 'Segoe UI', 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
     --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
     --font-mono:  'JetBrains Mono', 'SF Mono', Consolas, 'Cascadia Code', monospace;
 
-    /* 圆角 */
+    /* ---------- 圆角（MD3：16px 大圆角） ---------- */
     --rinui-radius-s: 8px;
-    --rinui-radius-m: 10px;
-    --rinui-radius-l: 12px;
+    --rinui-radius-m: 12px;
+    --rinui-radius-l: 16px;
+    --radius-large: 16px;
 
-    /* 阴影（极浅） */
-    --rinui-shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.05);
-    --rinui-shadow-md: 0 6px 16px rgba(31, 35, 40, 0.08);
-    --rinui-shadow-lg: 0 16px 40px rgba(31, 35, 40, 0.14);
+    /* ---------- 阴影（MD3 柔和层级，参考 Mizuki --shadow-*） ---------- */
+    --rinui-shadow-sm: 0 1px 3px oklch(0.3 0.02 var(--hue) / 0.06);
+    --rinui-shadow-md: 0 6px 16px oklch(0.3 0.02 var(--hue) / 0.09);
+    --rinui-shadow-lg: 0 16px 40px oklch(0.3 0.02 var(--hue) / 0.14);
+    --rinui-shadow-nav:0 2px 8px oklch(0.3 0.02 var(--hue) / 0.08);
 
-    /* 缓动曲线 */
+    /* ---------- 缓动曲线 ---------- */
     --ease-out-expo:    cubic-bezier(0.16, 1, 0.3, 1);
     --ease-out-quart:   cubic-bezier(0.25, 1, 0.5, 1);
     --ease-spring:      cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -68,48 +82,61 @@
     --ease-smooth:      cubic-bezier(0.4, 0, 0.2, 1);
     --ease-elastic:     cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+    /* 内容动画延迟（参考 Mizuki --content-delay） */
+    --content-delay: 150ms;
+
     color-scheme: light;
 }
 
 /* ---------- 设计令牌：深色 ---------- */
 :root[data-theme="dark"] {
-    --rinui-bg:          #0F1117;
-    --rinui-surface:     #1A1D27;
-    --rinui-surface-2:   #161923;
-    --rinui-surface-3:   #12141D;
-    --rinui-topbar:      rgba(15, 17, 23, 0.72);
-    --rinui-sidebar:     rgba(15, 17, 23, 0.78);
-    --rinui-statusbar:   rgba(15, 17, 23, 0.72);
-    --rinui-card:        rgba(26, 29, 39, 0.88);
-    --rinui-card-hov:    #1E222E;
-    --rinui-overlay:     rgba(15, 17, 23, 0.68);
-    --rinui-veil:        rgba(0, 0, 0, 0.60);
+    --rinui-bg:          oklch(0.17 0.016 var(--hue));
+    --rinui-surface:     oklch(0.22 0.02 var(--hue));
+    --rinui-surface-2:   oklch(0.19 0.018 var(--hue));
+    --rinui-surface-3:   oklch(0.16 0.015 var(--hue));
+    --rinui-topbar:      oklch(0.17 0.016 var(--hue) / 0.70);
+    --rinui-sidebar:     transparent;
+    --rinui-statusbar:   oklch(0.17 0.016 var(--hue) / 0.70);
+    --rinui-card:        oklch(0.23 0.018 var(--hue));
+    --rinui-card-hov:    oklch(0.26 0.02 var(--hue));
+    --rinui-overlay:     oklch(0.17 0.016 var(--hue) / 0.68);
+    --rinui-veil:        oklch(0 0 0 / 0.60);
+    --rinui-card-transparent: oklch(0.23 0.018 var(--hue) / 0.82);
+    --rinui-float-panel: oklch(0.21 0.018 var(--hue));
 
-    --rinui-border:       #262B38;
-    --rinui-border-hov:   #353B4C;
-    --rinui-border-strong:#454C60;
+    --rinui-border:       oklch(0.30 0.02 var(--hue));
+    --rinui-border-hov:   oklch(0.36 0.025 var(--hue));
+    --rinui-border-strong:oklch(0.43 0.03 var(--hue));
 
-    --rinui-tag-text:     #A5B4FC;
-    --rinui-tag-bg:       rgba(99, 102, 241, 0.14);
+    --rinui-accent:       oklch(0.75 0.14 var(--hue));
+    --rinui-accent-hover: oklch(0.80 0.12 var(--hue));
+    --rinui-accent-soft:  oklch(0.75 0.14 var(--hue) / 0.14);
+    --rinui-accent-line:  oklch(0.75 0.14 var(--hue) / 0.40);
+    --rinui-on-accent:    oklch(0.20 0.03 var(--hue));
+    --rinui-active:       oklch(0.75 0.14 var(--hue) / 0.18);
+    --rinui-tag-text:     oklch(0.82 0.10 var(--hue));
+    --rinui-tag-bg:       oklch(0.75 0.14 var(--hue) / 0.14);
 
-    --rinui-text:         #F3F4F6;
-    --rinui-text-reg:     #E5E7EB;
-    --rinui-text-sub:     #C9CDD6;
-    --rinui-text-muted:   #8B90A0;
-    --rinui-text-stat:    #8B90A0;
-    --rinui-text-dis:     #5C6270;
-    --rinui-text-ver:     #4A5060;
+    --rinui-text:         oklch(0.93 0.01 var(--hue));
+    --rinui-text-reg:     oklch(0.87 0.012 var(--hue));
+    --rinui-text-sub:     oklch(0.78 0.015 var(--hue));
+    --rinui-text-muted:   oklch(0.62 0.015 var(--hue));
+    --rinui-text-stat:    oklch(0.62 0.015 var(--hue));
+    --rinui-text-dis:     oklch(0.47 0.01 var(--hue));
+    --rinui-text-ver:     oklch(0.40 0.01 var(--hue));
+    --rinui-deep-text:    oklch(0.90 0.01 var(--hue));
 
-    --rinui-green:        #4ADE80;
-    --rinui-red:          #F87171;
-    --rinui-gold:         #FBBF24;
-    --rinui-green-soft:   rgba(74, 222, 128, 0.12);
-    --rinui-red-soft:     rgba(248, 113, 113, 0.12);
-    --rinui-gold-soft:    rgba(251, 191, 36, 0.12);
+    --rinui-green:        oklch(0.78 0.15 152);
+    --rinui-red:          oklch(0.72 0.19 25);
+    --rinui-gold:         oklch(0.82 0.14 82);
+    --rinui-green-soft:   oklch(0.78 0.15 152 / 0.14);
+    --rinui-red-soft:     oklch(0.72 0.19 25 / 0.14);
+    --rinui-gold-soft:    oklch(0.82 0.14 82 / 0.14);
 
-    --rinui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30);
-    --rinui-shadow-md: 0 6px 16px rgba(0, 0, 0, 0.38);
-    --rinui-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+    --rinui-shadow-sm: 0 1px 3px oklch(0 0 0 / 0.35);
+    --rinui-shadow-md: 0 6px 16px oklch(0 0 0 / 0.40);
+    --rinui-shadow-lg: 0 16px 40px oklch(0 0 0 / 0.55);
+    --rinui-shadow-nav:0 2px 8px oklch(0 0 0 / 0.35);
 
     color-scheme: dark;
 }
@@ -127,10 +154,12 @@
     flex: 0 0 auto;
     width: 164px;
     padding: 4px;
-    border: 1px solid var(--rinui-border-hov);
+    border: 1px solid var(--rinui-border);
     border-radius: 999px;
     background: var(--rinui-surface-2);
     font-family: var(--font-cn);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 .theme-switch::before {
     content: '';

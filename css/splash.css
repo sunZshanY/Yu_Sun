@@ -1,0 +1,120 @@
+/* ==========================================================================
+   Omiaちゃん Blog — 开屏画面 splash.css
+   全屏壁纸轮播 + 居中标题 + 底部小字，原创实现
+   ========================================================================== */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Noto Sans SC',
+        'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #101018;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ---------- 全屏壁纸交叉淡入轮播 ---------- */
+.wall {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+}
+.wall .slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    animation: wallFade 24s linear infinite;
+}
+.wall .slide:nth-child(1) { animation-delay: 0s; }
+.wall .slide:nth-child(2) { animation-delay: 6s; }
+.wall .slide:nth-child(3) { animation-delay: 12s; }
+.wall .slide:nth-child(4) { animation-delay: 18s; }
+@keyframes wallFade {
+    0%   { opacity: 0; }
+    4%   { opacity: 1; }
+    22%  { opacity: 1; }
+    26%  { opacity: 0; }
+    100% { opacity: 0; }
+}
+.wall .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(8, 8, 14, 0.34) 0%,
+        rgba(8, 8, 14, 0.06) 40%,
+        rgba(8, 8, 14, 0.55) 100%
+    );
+}
+
+/* ---------- 内容 ---------- */
+.stage {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.center {
+    text-align: center;
+    color: #fff;
+    animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: none; }
+}
+.title {
+    font-size: clamp(30px, 5.2vw, 56px);
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    line-height: 1.35;
+    text-shadow: 0 3px 22px rgba(0, 0, 0, 0.55);
+}
+.line {
+    width: 46px;
+    height: 3px;
+    margin: 20px auto 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* ---------- 底部（点击提示 + 小字欢迎语） ---------- */
+.foot {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    padding: 0 20px 26px;
+    text-align: center;
+    animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+.hint {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.62);
+    animation: breathe 1.8s ease-in-out infinite;
+}
+@keyframes breathe {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 1; }
+}
+.welcome {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.78);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}

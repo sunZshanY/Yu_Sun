@@ -1,10 +1,11 @@
 /**
- * Omiaちゃん Blog — 主脚本 v5.2
+ * Omiaちゃん Blog — 主脚本 v6.0
  * ==============================
  * 背景：雫API (api.imlazy.ink)
  * 数据：data/posts.json（GitHub 托管，每日更新）
  * 讨论：GitHub Discussions / giscus（由 discussion.js 挂载于 #discussion 面板）
  * 访客：localStorage 本地存储
+ * 设计：Mizuki 风格 Material Design 3
  */
 (function() {
     'use strict';
@@ -14,15 +15,13 @@
     var BG_TICK = 60000;
     var API_TIMEOUT = 8000;
 
-    var TYPE_LINE = 'Hello This is Yu Sun';
-    var TYPE_TICK = 100, TYPE_REST = 3000, TYPE_DEL = 90, TYPE_GAP = 1500;
-
     // ========== 全局态 ==========
     var g_postHeap = [];
     var bgLooper = null;
     var g_currentBgSrc = null;
     var g_currentBgIsApi = false;
     var watchingId = null;
+    var g_selectedTags = []; // 标签筛选（与搜索联动）
 
     // ========== DOM 缓取 ==========
     function $(s) { return document.querySelector(s); }
@@ -34,13 +33,13 @@
         // Toast
         toast:          $('#toastContainer'),
         // 顶栏
-        typeWriter:     $('#typed-text'),
         apiDot:         $('#apiStatusDot'),
         apiLabel:       $('#apiStatusText'),
         // 博客
         blogList:       $('#blogList'),
         blogEmpty:      $('#blogEmpty'),
         blogSearch:     $('#blogSearch'),
+        tagFilter:      $('#blogTagFilter'),
         // 状态栏
         visitorCount:   $('#visitorCount'),
         // 详情弹窗
@@ -83,10 +82,9 @@
     // ========== Toast ==========
     function _pop(msg, type) {
         type = type || 'info';
-        var icons = { success: '✔️', error: '❌', info: 'ℹ️' };
         var el = document.createElement('div');
         el.className = 'toast-item toast-' + type;
-        el.textContent = (icons[type]||'') + ' ' + msg;
+        el.textContent = msg;
         E.toast.appendChild(el);
         setTimeout(function() {
             el.style.animation = 'toastOut 0.35s ease forwards';
@@ -95,7 +93,7 @@
     }
 
     // ========== 背景 (雫API) ==========
-    var FALLBACK_BG = ['images/columbina-5k-3840x2160-25922.jpg','images/oshi-no-ko-3840x2160-25261.jpg','images/sparxie-honkai-star-3840x2160-26290.jpg','images/zhuang-fangyi-3840x2160-26226.jpg'];
+    var FALLBACK_BG = ['images/哥伦比亚.jpg','images/我推的孩子.jpg','images/火花.jpg','images/庄方宜.jpg'];
     var _fallbackIdx = -1;  // 本地轮播指针
     var _apiOnline = false; // 记录上次 API 状态
 
@@ -340,13 +338,31 @@
     }
 
     // ========== 博客渲染 ==========
+    function _paintTagFilter() {
+        if (!E.tagFilter) return;
+        var map = {};
+        g_postHeap.forEach(function(b){
+            (Array.isArray(b.tags) ? b.tags : []).forEach(function(t){ map[t] = (map[t] || 0) + 1; });
+        });
+        var tags = Object.keys(map).sort(function(a,b){ return (map[b] - map[a]) || a.localeCompare(b); });
+        var h = '<button type="button" class="filter-chip' + (g_selectedTags.length === 0 ? ' active' : '') + '" data-tag="">全部</button>';
+        tags.forEach(function(t){
+            var on = g_selectedTags.indexOf(t) !== -1;
+            h += '<button type="button" class="filter-chip' + (on ? ' active' : '') + '" data-tag="' + _safeAttr(t) + '">' + _safeHTML(t) + '</button>';
+        });
+        E.tagFilter.innerHTML = h;
+    }
+
     function _paintPosts() {
         var s = E.blogSearch ? E.blogSearch.value.trim().toLowerCase() : '';
         var f = g_postHeap;
-        if (s) f = g_postHeap.filter(function(b){return ~b.title.toLowerCase().indexOf(s)||~b.content.toLowerCase().indexOf(s)||(Array.isArray(b.tags) && b.tags.some(function(t){return ~t.toLowerCase().indexOf(s);}));});
+        if (s) f = f.filter(function(b){return ~b.title.toLowerCase().indexOf(s)||~b.content.toLowerCase().indexOf(s)||(Array.isArray(b.tags) && b.tags.some(function(t){return ~t.toLowerCase().indexOf(s);}));});
+        if (g_selectedTags.length) f = f.filter(function(b){
+            return g_selectedTags.every(function(t){ return Array.isArray(b.tags) && b.tags.indexOf(t) !== -1; });
+        });
 
         E.blogList.innerHTML = '';
-        if (!f.length) { E.blogList.style.display='none'; E.blogEmpty.classList.remove('hidden'); E.blogEmpty.querySelector('.empty-subtitle').textContent=s?'没有匹配的结果…':'敬请期待新文章~'; return; }
+        if (!f.length) { E.blogList.style.display='none'; E.blogEmpty.classList.remove('hidden'); E.blogEmpty.querySelector('.empty-subtitle').textContent=(s||g_selectedTags.length)?'没有匹配的结果…':'敬请期待新文章~'; return; }
         E.blogList.style.display=''; E.blogEmpty.classList.add('hidden');
 
         f.forEach(function(b){
@@ -395,19 +411,11 @@
     // ========== 灯箱 ==========
     window.openLightbox = function(src) { var ex=document.querySelector('.lightbox-overlay'); if(ex)ex.remove(); var o=document.createElement('div'); o.className='lightbox-overlay'; o.innerHTML='<img src="'+_safeAttr(src)+'" alt="放大查看">'; o.addEventListener('click',function(){o.remove();}); document.body.appendChild(o); };
 
-    // ========== 打字机 ==========
-    var _ti=0,_tdel=false,_tTimer=null;
-    function _typeLoop() {
-        clearTimeout(_tTimer); if(!E.typeWriter)return;
-        if(!_tdel){ if(_ti<TYPE_LINE.length){E.typeWriter.textContent+=TYPE_LINE[_ti];_ti++;_tTimer=setTimeout(_typeLoop,TYPE_TICK);}else{_tdel=true;_tTimer=setTimeout(_typeLoop,TYPE_REST);} }
-        else{ if(_ti>0){E.typeWriter.textContent=TYPE_LINE.slice(0,_ti-1);_ti--;_tTimer=setTimeout(_typeLoop,TYPE_DEL);}else{_tdel=false;_tTimer=setTimeout(_typeLoop,TYPE_GAP);} }
-    }
-
     // ========== storage 事件 ==========
     function _onStoreChange(evt) {
         if(!evt.key)return;
         switch(evt.key){
-            case BOX_KEY: _loadPosts().then(function(){ _paintPosts(); }); break;
+            case BOX_KEY: _loadPosts().then(function(){ _paintTagFilter(); _paintPosts(); }); break;
             case EYE_KEY: _eyeShow(null); break;
         }
     }
@@ -418,6 +426,21 @@
 
         E.blogSearch.addEventListener('input', _debounce(_paintPosts, 300));
         E.blogList.addEventListener('click', _cardClick);
+        if (E.tagFilter) {
+            E.tagFilter.addEventListener('click', function(e){
+                var chip = e.target.closest('.filter-chip');
+                if (!chip) return;
+                var tag = chip.dataset.tag;
+                if (!tag) g_selectedTags = [];
+                else {
+                    var idx = g_selectedTags.indexOf(tag);
+                    if (idx === -1) g_selectedTags.push(tag);
+                    else g_selectedTags.splice(idx, 1);
+                }
+                _paintTagFilter();
+                _paintPosts();
+            });
+        }
         E.detailShareBtn.addEventListener('click', function(){
             if(!watchingId)return;
             var link=location.origin+location.pathname.replace(/[^/]*$/,'')+'read.html?post='+watchingId;
@@ -446,13 +469,13 @@
 
         // 加载博客数据（从 JSON 文件）
         await _loadPosts();
+        _paintTagFilter();
         _paintPosts();
     }
 
     window.addEventListener('DOMContentLoaded', async function() {
         document.body.classList.add('loaded');
         await _kickstart();
-        _typeLoop();
         _startBgLoop();
     });
 
