@@ -93,8 +93,10 @@ export async function getOnlineVisitors(env) {
   const visitors = [];
 
   for (const key of list.keys) {
+    // 跳过统计键（visitor:stats:*），只处理会话键
+    if (key.name.startsWith(KV_PREFIX + 'stats:')) continue;
     const data = await store.get(key.name, 'json');
-    if (data) {
+    if (data && typeof data === 'object' && data.sessionId) {
       visitors.push(data);
     }
   }
