@@ -2,10 +2,10 @@
   "updatedAt": "2026-10-23",
   "playlist": [
     {
-      "title": "示例：把下面的 url 换成你的音频地址",
-      "artist": "曲目格式说明",
-      "url": "",
-      "cover": ""
+      "title": "Never Gonna Give You UP",
+      "artist": "Rick Astley",
+      "url": "https://kw-er.kuwo.cn/95b1643162c9e308581265c68f846188/6adbfcf8/resource/30106/trackmedia/M500002uuV822FEwpU.mp3",
+      "cover": "https://highresolutionmusic.com/files/data/cover/96/95387.jpg"
     }
   ]
 }
