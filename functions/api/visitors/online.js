@@ -18,8 +18,10 @@ function json(data, status) {
 export async function onRequestGet(context) {
   const { request, env } = context;
 
-  // Shared secret — must match the one in admin panel（从环境变量读取）
-  const ADMIN_AUTH_SECRET = env.ADMIN_AUTH_SECRET || '';
+  // 共享密钥：优先环境变量，未配置时回退到与 _p/index.html 一致的默认值。
+  // （该值已随前端页面公开，环境变量只是可选的轮换手段）
+  const DEFAULT_ADMIN_AUTH = 'e0c8a441e60db2bad23db9f352b478c5';
+  const ADMIN_AUTH_SECRET = env.ADMIN_AUTH_SECRET || DEFAULT_ADMIN_AUTH;
 
   // 服务器未配置密钥 → 无法鉴权，直接拒绝并明确告知
   if (!ADMIN_AUTH_SECRET) {

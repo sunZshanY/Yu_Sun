@@ -66,7 +66,7 @@
 | 配置项 | 位置 | 说明 |
 | --- | --- | --- |
 | KV 命名空间绑定 `VISITOR_STORE` | Pages 控制台 → Settings → Bindings → KV namespace | 访客监控与 KV 文章缓存的存储。**若通过 GitHub 集成自动部署，`wrangler.jsonc` 里的 `kv_namespaces` 不会自动生效，必须在此手动绑定** |
-| 环境变量 `ADMIN_AUTH_SECRET` | Settings → Environment variables | 必须与 `_p/index.html` 中的 `ADMIN_AUTH` 常量一致，否则管理员访客监控报 401 |
+| 环境变量 `ADMIN_AUTH_SECRET` | Settings → Environment variables（可选） | 管理员接口共享密钥，**默认已内置**与 `_p/index.html` 一致的密钥，未配置也能正常工作；设置后需与前端 `ADMIN_AUTH` 常量一致 |
 | 环境变量 `SHIZUKU_API_KEY` | 同上（可选） | 雫API 壁纸密钥，缺失时自动回退本地壁纸 |
 | 环境变量 `GITHUB_TOKEN` | 同上（可选） | 发布博文时自动推送 `data/posts.json` + `main.json` 触发部署 |
 

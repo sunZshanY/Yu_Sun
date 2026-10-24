@@ -17,7 +17,9 @@ function json(data, status) {
 export async function onRequestGet(context) {
   const { request, env } = context;
 
-  const ADMIN_AUTH_SECRET = env.ADMIN_AUTH_SECRET || '';
+  const DEFAULT_ADMIN_AUTH = 'e0c8a441e60db2bad23db9f352b478c5';
+  const ADMIN_AUTH_SECRET = env.ADMIN_AUTH_SECRET || DEFAULT_ADMIN_AUTH;
+
   if (!ADMIN_AUTH_SECRET) {
     return json({ error: 'auth_not_configured', message: '服务器未配置 ADMIN_AUTH_SECRET' }, 503);
   }
