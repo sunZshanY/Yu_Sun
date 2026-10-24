@@ -107,38 +107,42 @@
         </nav>
       </header>
 
-    <!-- ====== 横幅 Hero（主站首屏） ====== -->
-    <section class="rinui-hero" aria-label="站点介绍">
-      <div class="hero-text">
-        <h1 class="hero-title" id="heroTitle">私のウェブページへようこそ</h1>
-        <p class="hero-subtitle">欢迎来到我的网页</p>
-      </div>
-    </section>
+      <!-- ====== 横幅 Hero（主站首屏） ====== -->
+      <section class="rinui-hero" aria-label="站点介绍">
+        <div class="hero-text">
+          <h1 class="hero-title" id="heroTitle">私のウェブページへようこそ</h1>
+          <p class="hero-subtitle">欢迎来到我的网页</p>
+        </div>
+      </section>
 
-    <script>
-      (function () {
-        'use strict';
-        var el = document.getElementById('heroTitle');
-        if (!el) return;
-        var full = el.textContent.trim();
-        if (!full) return;
-        // 减少动态效果偏好：直接完整显示，不打字
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        el.classList.add('typing');
-        el.textContent = '';
-        var i = 0;
-        (function type() {
-          if (i < full.length) {
-            el.textContent = full.slice(0, i + 1);
-            i++;
-            setTimeout(type, 85 + Math.random() * 45);
-          } else {
-            el.classList.remove('typing');
-            el.classList.add('typed');
-          }
+      <script>
+        (function () {
+          "use strict";
+          var el = document.getElementById("heroTitle");
+          if (!el) return;
+          var full = el.textContent.trim();
+          if (!full) return;
+          // 减少动态效果偏好：直接完整显示，不打字
+          if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          )
+            return;
+          el.classList.add("typing");
+          el.textContent = "";
+          var i = 0;
+          (function type() {
+            if (i < full.length) {
+              el.textContent = full.slice(0, i + 1);
+              i++;
+              setTimeout(type, 85 + Math.random() * 45);
+            } else {
+              el.classList.remove("typing");
+              el.classList.add("typed");
+            }
+          })();
         })();
-      })();
-    </script>
+      </script>
 
       <!-- 主体 -->
       <div class="rinui-main">
@@ -249,6 +253,25 @@
               </div>
             </div>
 
+            <div class="project-card">
+              <div class="project-card-header">
+                <h3>Chargebuddy-Help</h3>
+                <a
+                  href="https://github.com/sunZshanY/chargebuddy-help"
+                  class="rinui-btn success"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >查看详情</a
+                >
+              </div>
+              <p class="project-desc">一款电量不足时可自动寻找充电包的项目</p>
+
+              <div class="project-tags">
+                <span class="rinui-tag">C</span
+                ><span class="rinui-tag">C++</span
+                ><span class="rinui-tag">Python</span>
+              </div>
+            </div>
             <div class="project-card">
               <div class="project-card-header">
                 <h3>nanox</h3>
