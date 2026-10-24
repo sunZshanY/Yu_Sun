@@ -85,6 +85,7 @@ export async function onRequestPost(context) {
 
   // 1) KV → 网站即时更新
   try {
+    if (!env.VISITOR_STORE) throw new Error('KV 命名空间 VISITOR_STORE 未绑定到 Cloudflare Pages');
     await env.VISITOR_STORE.put(KV_POSTS_KEY, JSON.stringify(dataJson));
     await env.VISITOR_STORE.put(KV_MAIN_KEY, JSON.stringify(mainJson));
   } catch (e) {
@@ -266,19 +267,27 @@ async function pushToGitHub(token, path, content, message) {
     'User-Agent': 'omia-blog-admin'
   };
 
+  // 文件不存在（404）→ 走创建流程；已存在 → 携带 sha 更新
+  let sha = null;
   const cur = await fetch(api + '?ref=' + GH_BRANCH, { headers });
-  if (!cur.ok) throw new Error('GitHub 读取失败（' + path + '）: HTTP ' + cur.status);
-  const info = await cur.json();
+  if (cur.ok) {
+    const info = await cur.json();
+    sha = info.sha;
+  } else if (cur.status !== 404) {
+    throw new Error('GitHub 读取失败（' + path + '）: HTTP ' + cur.status);
+  }
+
+  const payload = {
+    message,
+    content: b64encode(content),
+    branch: GH_BRANCH
+  };
+  if (sha) payload.sha = sha;
 
   const put = await fetch(api, {
     method: 'PUT',
     headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-    body: JSON.stringify({
-      message,
-      content: b64encode(content),
-      sha: info.sha,
-      branch: GH_BRANCH
-    })
+    body: JSON.stringify(payload)
   });
   if (!put.ok) {
     const e = await put.json().catch(() => ({}));

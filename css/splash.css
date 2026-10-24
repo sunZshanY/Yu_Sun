@@ -118,3 +118,19 @@ body {
     color: rgba(255, 255, 255, 0.78);
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
+
+/* ---------- 备案号（ICP 检查器需要能从根页面读取到） ---------- */
+.icp {
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    color: rgba(255, 255, 255, 0.55);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+.icp a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.icp a:hover { color: rgba(255, 255, 255, 0.9); }
+.icp .icp-sep { margin: 0 8px; opacity: 0.6; }

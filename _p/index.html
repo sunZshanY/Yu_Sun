@@ -112,6 +112,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text2);min-height:
 .visitor-tbl tbody tr.new-row{animation:rowIn .4s ease}
 @keyframes rowIn{from{background:rgba(16,185,129,.15)}to{background:transparent}}
 .visitor-live{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:3px;animation:pulse-dot 1.2s ease-in-out infinite}
+.visitor-poll.err{color:var(--red)}
+.visitor-poll.err .visitor-poll-dot{background:var(--red);animation:none}
+/* 人流量统计（7 日趋势） */
+.traffic-stats{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.traffic-total{color:var(--text3);font-size:12px;margin-bottom:10px}
+.traffic-total strong{color:var(--gold);font-family:var(--mono);font-size:14px;margin-left:6px}
+.traffic-bars{display:flex;align-items:flex-end;gap:10px;height:90px}
+.traffic-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.traffic-bar-fill{width:100%;max-width:34px;background:linear-gradient(180deg,var(--accent),rgba(59,130,246,.35));border-radius:4px 4px 0 0;min-height:2px;transition:height .4s ease}
+.traffic-bar-day{font-size:10px;color:var(--text4);font-family:var(--mono);white-space:nowrap}
+.traffic-bar-count{font-size:10px;color:var(--text3);font-family:var(--mono)}
+.traffic-err{color:var(--red);font-size:12px;margin-top:8px}
 .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
 .tab{padding:9px 22px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text3);font-size:14px;cursor:pointer;font-family:var(--font);transition:all .2s}
 .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -321,6 +333,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text2);min-height:
           <thead><tr><th>IP</th><th>地区</th><th>浏览器</th><th>页面</th><th>在线时长</th></tr></thead>
           <tbody id="visitorTbody"></tbody>
         </table>
+      </div>
+      <!-- 人流量变化（7 日趋势） -->
+      <div class="traffic-stats">
+        <div class="traffic-total">累计访问（新会话）<strong id="trafficTotal">—</strong></div>
+        <div class="traffic-bars" id="trafficBars"></div>
+        <p class="traffic-err" id="trafficErr" style="display:none"></p>
       </div>
     </div>
 
@@ -537,33 +555,128 @@ function logout(){
 
 // ===== 实时访客监控 =====
 var VISITOR_API_ONLINE = '/api/visitors/online';
+var VISITOR_API_STATS = '/api/visitors/stats';
 var VISITOR_POLL_MS = 3000;
+var STATS_POLL_MS = 60000;
+var VISITOR_TIMEOUT_MS = 6000;
 var ADMIN_AUTH = 'e0c8a441e60db2bad23db9f352b478c5';
 var _visitorTimer = null;
+var _statsTimer = null;
+var _visitorInFlight = false;
+var _statsInFlight = false;
 var _prevSids = {};
 
 function startVisitorPoll(){
+  stopVisitorPoll();
   _fetchVisitors();
+  _fetchStats();
   _visitorTimer = setInterval(_fetchVisitors, VISITOR_POLL_MS);
+  _statsTimer = setInterval(_fetchStats, STATS_POLL_MS);
 }
 
 function stopVisitorPoll(){
   if(_visitorTimer){ clearInterval(_visitorTimer); _visitorTimer = null; }
+  if(_statsTimer){ clearInterval(_statsTimer); _statsTimer = null; }
+}
+
+function _setPollStatus(text, isErr){
+  var el = document.getElementById('pollStatus');
+  var wrap = el && el.parentElement;
+  el.textContent = text;
+  if(wrap) wrap.classList.toggle('err', !!isErr);
+}
+
+function _pollErrorText(data, status, err){
+  if(data && data.error === 'kv_unbound') return '⚠ KV 未绑定：请在 Cloudflare Pages 绑定 VISITOR_STORE';
+  if(data && data.error === 'auth_not_configured') return '⚠ 服务器未配置 ADMIN_AUTH_SECRET 环境变量';
+  if(status === 401) return '⚠ 鉴权失败：密钥与服务器不一致';
+  if(status === 503) return '⚠ 服务不可用（HTTP 503）';
+  if(err && (err.name === 'AbortError' || /timeout/i.test(err.message || ''))) return '⚠ 连接超时';
+  if(status) return '⚠ 服务器错误（HTTP ' + status + '）';
+  return '⚠ 连接异常（网络断开）';
 }
 
 function _fetchVisitors(){
+  if(_visitorInFlight) return;
+  _visitorInFlight = true;
+  var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, VISITOR_TIMEOUT_MS) : null;
+
   fetch(VISITOR_API_ONLINE, {
     headers: { 'X-Admin-Auth': ADMIN_AUTH },
-    cache: 'no-cache'
+    cache: 'no-cache',
+    signal: ctrl ? ctrl.signal : undefined
   })
-  .then(function(r){ if(!r.ok) throw Error('HTTP '+r.status); return r.json(); })
-  .then(function(data){
-    _renderVisitors(data);
-    document.getElementById('pollStatus').textContent = '监控中 ' + new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  .then(function(r){ return r.json().then(function(d){ return {status:r.status, data:d}; }); })
+  .then(function(res){
+    if(res.status === 200){
+      _renderVisitors(res.data);
+      _setPollStatus('监控中 ' + new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'}), false);
+    } else {
+      _setPollStatus(_pollErrorText(res.data, res.status), true);
+    }
   })
   .catch(function(err){
-    document.getElementById('pollStatus').textContent = '⚠ 连接异常';
+    _setPollStatus(_pollErrorText(null, 0, err), true);
+  })
+  .then(function(){
+    if(timer) clearTimeout(timer);
+    _visitorInFlight = false;
   });
+}
+
+function _fetchStats(){
+  if(_statsInFlight) return;
+  _statsInFlight = true;
+  var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, VISITOR_TIMEOUT_MS) : null;
+
+  fetch(VISITOR_API_STATS, {
+    headers: { 'X-Admin-Auth': ADMIN_AUTH },
+    cache: 'no-cache',
+    signal: ctrl ? ctrl.signal : undefined
+  })
+  .then(function(r){ return r.json().then(function(d){ return {status:r.status, data:d}; }); })
+  .then(function(res){
+    var errEl = document.getElementById('trafficErr');
+    if(res.status === 200 && res.data && res.data.ok){
+      _renderStats(res.data);
+      if(errEl) errEl.style.display = 'none';
+    } else {
+      if(errEl){ errEl.textContent = _pollErrorText(res.data, res.status); errEl.style.display = ''; }
+    }
+  })
+  .catch(function(err){
+    var errEl = document.getElementById('trafficErr');
+    if(errEl){ errEl.textContent = _pollErrorText(null, 0, err); errEl.style.display = ''; }
+  })
+  .then(function(){
+    if(timer) clearTimeout(timer);
+    _statsInFlight = false;
+  });
+}
+
+function _renderStats(data){
+  var totalEl = document.getElementById('trafficTotal');
+  var barsEl = document.getElementById('trafficBars');
+  if(!barsEl) return;
+  if(totalEl) totalEl.textContent = (typeof data.total === 'number') ? data.total : 0;
+
+  var daily = Array.isArray(data.daily) ? data.daily : [];
+  var max = 1;
+  daily.forEach(function(d){ if(d.count > max) max = d.count; });
+
+  var h = '';
+  daily.forEach(function(d){
+    var pct = Math.round(d.count / max * 100);
+    var hpx = d.count > 0 ? Math.max(4, Math.round(pct * 0.72)) : 2;
+    h += '<div class="traffic-bar">'
+      + '<span class="traffic-bar-count">' + d.count + '</span>'
+      + '<div class="traffic-bar-fill" style="height:' + hpx + 'px"></div>'
+      + '<span class="traffic-bar-day">' + esc(d.date.slice(5)) + '</span>'
+      + '</div>';
+  });
+  barsEl.innerHTML = h;
 }
 
 function _renderVisitors(data){
@@ -1346,6 +1459,15 @@ function showShell(){
 // 启动
 initGate();wire();
 if(localStorage.getItem(BOSS_KEY)==='1'){fetchData(function(){render()})}
+
+// 页面切后台暂停轮询、切回前台恢复（省 KV 读取量）
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden){
+    stopVisitorPoll();
+  } else if(localStorage.getItem(BOSS_KEY)==='1'){
+    startVisitorPoll();
+  }
+});
 })();
 </script>
 </body>

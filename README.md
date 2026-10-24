@@ -59,6 +59,19 @@
 
 在项目根目录执行 `python -m http.server 8000 --bind 127.0.0.1`，打开 `http://127.0.0.1:8000`（先见开屏，点击进入主站）。此方式使用静态文章与本地壁纸回退；线上 API 由 Cloudflare Pages 的 `functions/` 提供。
 
+## Cloudflare Pages 部署配置
+
+`functions/` 提供四个后端接口：`/api/posts-data`（文章读取）、`/api/posts`（发布博文）、`/api/bg`（雫API 壁纸代理）、`/api/visitors/*`（访客心跳/在线列表/流量统计）。线上必须完成以下配置，否则管理面板会显示「连接异常」或「KV 未绑定」：
+
+| 配置项 | 位置 | 说明 |
+| --- | --- | --- |
+| KV 命名空间绑定 `VISITOR_STORE` | Pages 控制台 → Settings → Bindings → KV namespace | 访客监控与 KV 文章缓存的存储。**若通过 GitHub 集成自动部署，`wrangler.jsonc` 里的 `kv_namespaces` 不会自动生效，必须在此手动绑定** |
+| 环境变量 `ADMIN_AUTH_SECRET` | Settings → Environment variables | 必须与 `_p/index.html` 中的 `ADMIN_AUTH` 常量一致，否则管理员访客监控报 401 |
+| 环境变量 `SHIZUKU_API_KEY` | 同上（可选） | 雫API 壁纸密钥，缺失时自动回退本地壁纸 |
+| 环境变量 `GITHUB_TOKEN` | 同上（可选） | 发布博文时自动推送 `data/posts.json` + `main.json` 触发部署 |
+
+首次发布博文时 `main.json` 若仓库中不存在会自动创建。备案检查（萌ICP/假ICP）抓取的是**根页面**，因此备案号已同时放在 `index.html`（开屏页）与 `home.html` 页脚，删除前请确认检查器要求。
+
 ## 浏览器回归验证
 
 首次运行：

@@ -10,22 +10,40 @@
  *   User-Agent        → browser info
  */
 
-import { recordHeartbeat, simplifyUA } from './_utils';
+import { recordHeartbeat, simplifyUA, requireStore } from './_utils';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
 
+  let body;
   try {
-    const body = await request.json();
-    const sessionId = body.sessionId;
+    body = await request.json();
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'invalid_json' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
-    if (!sessionId) {
-      return new Response(JSON.stringify({ error: 'Missing sessionId' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+  const sessionId = body && body.sessionId;
+  if (!sessionId) {
+    return new Response(JSON.stringify({ error: 'Missing sessionId' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
+  try {
+    requireStore(env);
+  } catch (e) {
+    // KV 未绑定：访客监控整体不可用（前端静默忽略响应）
+    return new Response(JSON.stringify({ error: 'kv_unbound', message: 'VISITOR_STORE 未绑定' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  try {
     const data = {
       ip: request.headers.get('CF-Connecting-IP') || '未知',
       country: request.headers.get('CF-IPCountry') || '未知',

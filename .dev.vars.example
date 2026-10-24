@@ -1,3 +1,16 @@
 # 本地开发用：复制为 .dev.vars 并填入真实值
 # 生产环境需在 Cloudflare Pages 控制台 → Settings → Environment variables 中设置同名变量
-ADMIN_AUTH_SECRET=please-change-me
+#
+# 注意：
+# 1. ADMIN_AUTH_SECRET 必须与 _p/index.html 中的 ADMIN_AUTH 常量一致，
+#    否则管理员面板实时访客监控会报 401 鉴权失败（显示「连接异常」）。
+# 2. 若通过 GitHub 集成部署 Pages，wrangler.jsonc 中的 kv_namespaces 不会自动生效，
+#    必须在 Pages 控制台 → Settings → Bindings → KV namespace 手动添加
+#    变量名 VISITOR_STORE 指向对应的 KV 命名空间，否则访客监控与 KV 文章缓存不可用。
+ADMIN_AUTH_SECRET=e0c8a441e60db2bad23db9f352b478c5
+
+# 雫API 壁纸代理密钥（可选，缺失时前端自动回退本地壁纸）
+SHIZUKU_API_KEY=
+
+# 发布博文时自动推送 GitHub 的 Token（可选，也可在管理面板浏览器端填写）
+GITHUB_TOKEN=
