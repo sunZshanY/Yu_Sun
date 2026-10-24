@@ -220,6 +220,23 @@ button { font-family: inherit; }
     line-height: 1.3;
     color: #fff;
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+    min-height: 1.3em;
+}
+/* 打字机光标（JS 打字的整个过程中持续闪烁） */
+.hero-title.typing::after,
+.hero-title.typed::after {
+    content: '▌';
+    margin-left: 2px;
+    color: rgba(255, 255, 255, 0.92);
+    animation: caretBlink 1.05s steps(1, end) infinite;
+}
+@keyframes caretBlink {
+    0%, 55% { opacity: 1; }
+    56%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-title.typing::after,
+    .hero-title.typed::after { animation: none; }
 }
 .hero-subtitle {
     margin: 16px 0 0;

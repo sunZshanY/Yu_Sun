@@ -293,7 +293,7 @@ class FrontendTests(unittest.TestCase):
         expect(self.page.locator(".welcome")).to_have_text("欢迎来到我的网页")
         self.page.mouse.click(5, 5)
         expect(self.page.locator(".rinui-topbar")).to_be_visible()
-        expect(self.page.locator(".hero-title")).to_have_text("こんにちは、ようこそう私のWebsite")
+        expect(self.page.locator(".hero-title")).to_have_text("私のウェブページへようこそ")
         expect(self.page.locator(".hero-subtitle")).to_have_text("欢迎来到我的网页")
 
 
