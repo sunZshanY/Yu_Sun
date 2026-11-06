@@ -113,10 +113,16 @@
             // 底栏
             footer.innerHTML = '<span class="read-footer-note">© sunZshanY.inc · CC BY-NC-SA 4.0</span>'
                 + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
-                + '<button class="read-footer-btn" onclick="copyLink()">复制链接</button>'
+                + '<button class="read-footer-btn" onclick="scrollToComments()">评论</button>'
+                + '<button class="read-footer-btn" id="copyLinkBtn" onclick="copyLink()">复制链接</button>'
                 + '<a href="home.html" class="read-footer-btn">返回首页</a>'
                 + '</div>';
             footer.style.display = '';
+
+            // 通知评论区：文章已经渲染完成，可以按 post.id 加载评论。
+            document.dispatchEvent(new CustomEvent('omi:article-loaded', {
+                detail: { post: post }
+            }));
         });
     }
 
@@ -131,10 +137,16 @@
         document.title = '404 — Omiaちゃん的小博客';
     }
 
+    // 跳到评论区
+    window.scrollToComments = function() {
+        var comments = document.getElementById('comments');
+        if (comments) comments.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     // 复制链接
     window.copyLink = function() {
         navigator.clipboard.writeText(location.href).then(function() {
-            var btn = document.querySelector('.read-footer-btn');
+            var btn = document.getElementById('copyLinkBtn');
             if (btn) { var t = btn.textContent; btn.textContent = '已复制'; setTimeout(function(){ btn.textContent = t; }, 1800); }
         }).catch(function() {
             alert('复制失败，请手动复制地址栏链接');

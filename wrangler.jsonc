@@ -14,5 +14,23 @@
       "binding": "VISITOR_STORE",
       "id": "0f7f3ab0dc3541e3ad845a07d9819d00"
     }
+  ],
+
+  // ====== 评论系统（Cloudflare D1，免费） ======
+  // 数据库 omia-comments 已创建，表结构已通过 db/schema.d1.sql 初始化。
+  //
+  // 本地开发：
+  //   npx wrangler d1 execute COMMENT_DB --local --file=db/schema.d1.sql
+  //   npx wrangler pages dev . --d1 COMMENT_DB
+  //
+  // 线上部署时 wrangler 会携带这个绑定；如果通过控制台上传或绑定，
+  // 变量名请保持 COMMENT_DB。
+  "d1_databases": [
+    {
+      "binding": "COMMENT_DB",
+      "database_name": "omia-comments",
+      "database_id": "9322d96a-f82a-4da8-9dc0-6a698195da5a",
+      "preview_database_id": "COMMENT_DB"
+    }
   ]
 }

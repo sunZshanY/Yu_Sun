@@ -1,0 +1,414 @@
+/* ==========================================================================
+   Omiaちゃん Blog — 全站账号 / 登录弹窗
+   ========================================================================== */
+
+[hidden] { display: none !important; }
+
+.auth-slot {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+/* ---------- 右上角胶囊按钮 ---------- */
+.auth-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 36px;
+    max-width: 190px;
+    padding: 0 14px;
+    border: 1px solid var(--rinui-border);
+    border-radius: 999px;
+    background: var(--rinui-surface-2);
+    color: var(--rinui-text-sub);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s var(--ease-smooth),
+        border-color 0.2s var(--ease-smooth),
+        color 0.2s var(--ease-smooth),
+        transform 0.15s var(--ease-smooth);
+}
+.auth-pill:hover {
+    border-color: var(--rinui-accent-line);
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+}
+.auth-pill:active { transform: scale(0.97); }
+.auth-pill:focus-visible {
+    outline: 2px solid var(--rinui-accent);
+    outline-offset: 2px;
+}
+.auth-pill-login {
+    background: var(--rinui-accent);
+    color: var(--rinui-on-accent);
+    border-color: transparent;
+}
+.auth-pill-login:hover {
+    background: var(--rinui-accent-hover);
+    color: var(--rinui-on-accent);
+    border-color: transparent;
+}
+.auth-pill-user {
+    padding-left: 6px;
+    padding-right: 12px;
+}
+.auth-pill-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.auth-pill-admin {
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+}
+.auth-pill-loading { opacity: 0.65; cursor: wait; }
+.auth-pill-spinner {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 2px solid var(--rinui-accent-line);
+    border-top-color: var(--rinui-accent);
+    animation: authSpin 0.8s linear infinite;
+}
+@keyframes authSpin { to { transform: rotate(360deg); } }
+
+.auth-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--rinui-surface-3);
+    border: 1px solid var(--rinui-border);
+}
+.auth-avatar-fallback {
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+    font-weight: 800;
+    line-height: 1;
+    border-color: var(--rinui-accent-line);
+}
+
+/* ---------- 遮罩与卡片 ---------- */
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+.auth-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--rinui-veil);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.auth-card {
+    position: relative;
+    z-index: 1;
+    width: min(94vw, 430px);
+    max-height: min(92vh, 720px);
+    overflow-y: auto;
+    padding: 28px 28px 22px;
+    border-radius: 22px;
+    background: var(--rinui-float-panel);
+    border: 1px solid var(--rinui-border);
+    box-shadow: var(--rinui-shadow-lg);
+    animation: authIn 0.28s var(--ease-out-quart) both;
+}
+@keyframes authIn {
+    from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+.auth-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--rinui-text-muted);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.18s var(--ease-smooth), color 0.18s var(--ease-smooth);
+}
+.auth-close:hover {
+    color: var(--rinui-text);
+    background: var(--rinui-surface-2);
+}
+
+/* ---------- 头部 ---------- */
+.auth-head { text-align: center; margin-bottom: 18px; }
+.auth-head-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+    border: 1px solid var(--rinui-accent-line);
+}
+.auth-heading {
+    margin: 0 0 5px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+.auth-subtitle {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--rinui-text-muted);
+}
+
+/* ---------- GitHub ---------- */
+.auth-github { text-align: center; }
+.auth-github-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: #24292f;
+    color: #fff;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+}
+.auth-github-btn:hover { background: #3a4149; }
+.auth-github-btn:active { transform: scale(0.98); }
+.auth-github-note {
+    margin: 9px 0 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--rinui-text-muted);
+}
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 14px;
+    font-size: 11.5px;
+    color: var(--rinui-text-ver);
+    white-space: nowrap;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--rinui-border);
+}
+
+/* ---------- 登录 / 注册标签 ---------- */
+.auth-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 16px;
+    border-radius: 999px;
+    background: var(--rinui-surface-2);
+    border: 1px solid var(--rinui-border);
+}
+.auth-tab {
+    flex: 1 1 0;
+    min-height: 32px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--rinui-text-muted);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), color 0.2s var(--ease-smooth);
+}
+.auth-tab:hover { color: var(--rinui-accent); }
+.auth-tab.is-active {
+    color: var(--rinui-on-accent);
+    background: var(--rinui-accent);
+    box-shadow: var(--rinui-shadow-sm);
+}
+
+/* ---------- 表单 ---------- */
+.auth-form { display: block; }
+.auth-field {
+    display: block;
+    margin-bottom: 12px;
+}
+.auth-field > span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 650;
+    color: var(--rinui-text-sub);
+}
+.auth-field input {
+    display: block;
+    width: 100%;
+    height: 42px;
+    padding: 0 13px;
+    border: 1px solid var(--rinui-border);
+    border-radius: var(--rinui-radius-m);
+    background: var(--rinui-surface);
+    color: var(--rinui-text);
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
+}
+.auth-field input::placeholder { color: var(--rinui-text-dis); }
+.auth-field input:focus {
+    border-color: var(--rinui-accent);
+    box-shadow: 0 0 0 3px var(--rinui-accent-soft);
+}
+.auth-form-error {
+    margin: 2px 0 10px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--rinui-red);
+}
+.auth-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 42px;
+    margin-top: 4px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--rinui-accent);
+    color: var(--rinui-on-accent);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+}
+.auth-submit:hover:not(:disabled) { background: var(--rinui-accent-hover); }
+.auth-submit:active:not(:disabled) { transform: scale(0.98); }
+.auth-submit:disabled { opacity: 0.6; cursor: wait; }
+.auth-form-note {
+    margin: 10px 0 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--rinui-text-muted);
+    text-align: center;
+}
+
+/* ---------- 已登录 ---------- */
+.auth-account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: var(--rinui-radius-m);
+    background: var(--rinui-surface-2);
+    border: 1px solid var(--rinui-border);
+}
+.auth-account-avatar { display: inline-flex; flex: 0 0 auto; }
+.auth-account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.auth-account-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+}
+.auth-account-info span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11.5px;
+    color: var(--rinui-text-muted);
+}
+.auth-account-role {
+    margin-left: auto;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+}
+.auth-account-note {
+    margin: 0 0 14px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--rinui-text-muted);
+    text-align: center;
+}
+.auth-logout {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid var(--rinui-red-soft);
+    border-radius: 999px;
+    background: var(--rinui-red-soft);
+    color: var(--rinui-red);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), color 0.2s var(--ease-smooth);
+}
+.auth-logout:hover { background: var(--rinui-red); color: #fff; }
+
+.auth-footnote {
+    margin: 16px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--rinui-border);
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--rinui-text-ver);
+    text-align: center;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+    .auth-pill { height: 34px; padding: 0 12px; }
+    .auth-pill-user { padding-left: 5px; padding-right: 10px; }
+    .auth-pill-label { max-width: 96px; }
+    .auth-card { padding: 24px 18px 18px; border-radius: 18px; }
+    .auth-field input { font-size: 16px; }
+}
+
+@media (max-width: 380px) {
+    .auth-pill { width: 36px; padding: 0; }
+    .auth-pill .auth-pill-label,
+    .auth-pill .auth-pill-admin { display: none; }
+}

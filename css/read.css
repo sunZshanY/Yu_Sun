@@ -89,6 +89,12 @@ a { color: var(--rinui-accent); }
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.read-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+}
 
 /* ---------- 主体（MD3 卡片） ---------- */
 .read-main {
@@ -235,6 +241,7 @@ a { color: var(--rinui-accent); }
     .read-main { margin: 12px 10px 0; padding: 24px 18px; border-radius: var(--rinui-radius-m); }
     .read-footer { margin: 12px 10px 20px; border-radius: var(--rinui-radius-m); }
     .read-top-title { display: none; }
+    .read-top-actions { gap: 8px; }
     .article-hero-grid { grid-template-columns: 1fr 1fr; }
     .article-hero-grid img { height: 130px; }
 }

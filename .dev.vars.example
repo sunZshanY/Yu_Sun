@@ -15,3 +15,27 @@ SHIZUKU_API_KEY=
 
 # 发布博文时自动推送 GitHub 的 Token（可选，也可在管理面板浏览器端填写）
 GITHUB_TOKEN=
+
+# ====== 评论系统 GitHub 登录（必填，否则评论区只能看不能登录） ======
+# GitHub → Settings → Developer settings → OAuth Apps → New OAuth App
+# Homepage URL: https://omiasun.pages.dev
+# Authorization callback URL: https://omiasun.pages.dev/api/auth/github/callback
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+# 管理员 GitHub 用户名（可选，逗号分隔；可删除任意评论）
+COMMENT_ADMIN_USER=sunZshanY
+
+# 原生账号密码的 pepper（建议设置一次后不要再改；改了旧密码会失效）
+# 不设置时会回退到 ADMIN_AUTH_SECRET 或内置默认值
+PASSWORD_PEPPER=
+
+# 自定义域名时固定 OAuth 回调来源（可选，例如 https://blog.example.com）
+PUBLIC_ORIGIN=
+
+# ====== 评论数据库 D1 ======
+# 先在 Cloudflare 创建 D1 并绑定 COMMENT_DB，然后执行：
+# npx wrangler d1 execute omia-comments --remote --file=db/schema.d1.sql
+# 本地开发：
+# npx wrangler d1 execute COMMENT_DB --local --file=db/schema.d1.sql
+# npx wrangler pages dev . --d1 COMMENT_DB

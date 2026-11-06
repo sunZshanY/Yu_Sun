@@ -1,0 +1,361 @@
+/* ==========================================================================
+   Omiaちゃん Blog — 文章评论区
+   ========================================================================== */
+
+[hidden] { display: none !important; }
+
+.read-comments {
+    max-width: 880px;
+    margin: 16px auto 0;
+    padding: 30px 38px 34px;
+    border-radius: var(--radius-large);
+    background: var(--rinui-card-transparent);
+    border: 1px solid var(--rinui-border);
+    box-shadow: var(--rinui-shadow-sm);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    animation: readIn 0.5s var(--ease-out-quart) both;
+}
+
+/* ---------- 标题与当前用户 ---------- */
+.comments-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.comments-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+.comments-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--rinui-tag-text);
+    background: var(--rinui-tag-bg);
+}
+.comments-account {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.comments-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 10px 4px 5px;
+    border-radius: 999px;
+    background: var(--rinui-surface-2);
+    border: 1px solid var(--rinui-border);
+}
+.comments-user-name {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---------- 登录提示 ---------- */
+.comments-auth {
+    padding: 24px 20px;
+    border-radius: var(--rinui-radius-m);
+    background: var(--rinui-accent-soft);
+    border: 1px dashed var(--rinui-accent-line);
+    text-align: center;
+}
+.comments-auth-title {
+    margin: 0 0 10px;
+    font-size: 15.5px;
+    font-weight: 750;
+    color: var(--rinui-text);
+}
+.comments-auth-note {
+    margin: 12px auto 0;
+    max-width: 460px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--rinui-text-muted);
+}
+.comments-auth-error {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--rinui-red);
+}
+.comment-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--rinui-accent);
+    color: var(--rinui-on-accent);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+}
+.comment-login-btn:hover { background: var(--rinui-accent-hover); color: var(--rinui-on-accent); }
+.comment-login-btn:active { transform: scale(0.97); }
+
+/* ---------- 发表框 ---------- */
+.comment-compose {
+    margin: 0 0 22px;
+    padding: 16px 18px 18px;
+    border-radius: var(--rinui-radius-m);
+    background: var(--rinui-surface-2);
+    border: 1px solid var(--rinui-border);
+}
+.comment-compose-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.comment-compose-avatar {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+.comment-compose-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13.5px;
+    font-weight: 750;
+}
+.comment-reply-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 9px;
+    font-size: 12.5px;
+    color: var(--rinui-accent);
+}
+.comment-reply-hint strong { font-weight: 700; }
+.comment-input {
+    display: block;
+    width: 100%;
+    min-height: 96px;
+    padding: 12px 14px;
+    border: 1px solid var(--rinui-border);
+    border-radius: var(--rinui-radius-m);
+    background: var(--rinui-surface);
+    color: var(--rinui-text);
+    font: inherit;
+    font-size: 14.5px;
+    line-height: 1.75;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
+}
+.comment-input::placeholder { color: var(--rinui-text-dis); }
+.comment-input:focus {
+    border-color: var(--rinui-accent);
+    box-shadow: 0 0 0 3px var(--rinui-accent-soft);
+}
+.comment-compose-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+}
+.comment-char-count {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--rinui-text-muted);
+}
+.comment-submit {
+    padding: 9px 24px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--rinui-accent);
+    color: var(--rinui-on-accent);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+}
+.comment-submit:hover:not(:disabled) { background: var(--rinui-accent-hover); }
+.comment-submit:active:not(:disabled) { transform: scale(0.97); }
+.comment-submit:disabled { opacity: 0.55; cursor: wait; }
+.comment-error {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--rinui-red);
+}
+
+/* ---------- 评论列表 ---------- */
+.comments-status {
+    margin: 0 0 8px;
+    padding: 10px 0;
+    font-size: 13.5px;
+    color: var(--rinui-text-muted);
+}
+.comments-status.is-error { color: var(--rinui-red); }
+.comments-list { display: block; }
+
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 0;
+    border-top: 1px solid var(--rinui-border);
+}
+.comment-item:first-child { border-top: 0; padding-top: 4px; }
+.comment-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--rinui-surface-3);
+    border: 1px solid var(--rinui-border);
+}
+.comment-avatar-fallback {
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    border-color: var(--rinui-accent-line);
+}
+.comment-main { flex: 1 1 auto; min-width: 0; }
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+.comment-author { font-size: 14px; font-weight: 750; }
+.comment-handle {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11.5px;
+    color: var(--rinui-text-muted);
+}
+.comment-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--rinui-text-ver);
+}
+.comment-admin-badge {
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+}
+.comment-content {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--rinui-text-sub);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.comment-item.is-deleted .comment-content {
+    color: var(--rinui-text-dis);
+    font-style: italic;
+}
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 3px;
+}
+.comment-text-btn {
+    padding: 3px 7px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--rinui-text-muted);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.18s var(--ease-smooth), background 0.18s var(--ease-smooth);
+}
+.comment-text-btn:hover {
+    color: var(--rinui-accent);
+    background: var(--rinui-accent-soft);
+}
+.comment-text-danger:hover {
+    color: var(--rinui-red);
+    background: var(--rinui-red-soft);
+}
+
+/* ---------- 回复 ---------- */
+.comment-replies {
+    margin: 12px 0 0 4px;
+    padding-left: 18px;
+    border-left: 2px solid var(--rinui-accent-soft);
+}
+.comment-reply {
+    padding: 13px 0 0;
+    margin-top: 13px;
+    border-top: 1px solid var(--rinui-border);
+}
+.comment-reply:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+.comment-reply .comment-avatar { width: 32px; height: 32px; }
+
+/* ---------- 空状态 ---------- */
+.comments-empty {
+    padding: 34px 16px 26px;
+    text-align: center;
+}
+.comments-empty-title {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--rinui-text-sub);
+}
+.comments-empty-subtitle {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--rinui-text-muted);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+    .read-comments {
+        margin: 12px 10px 0;
+        padding: 22px 16px 24px;
+        border-radius: var(--rinui-radius-m);
+    }
+    .comments-heading { font-size: 18px; }
+    .comments-account { width: 100%; justify-content: flex-end; }
+    .comments-user-name { max-width: 120px; }
+    .comment-compose { padding: 13px 13px 15px; }
+    .comment-item { gap: 9px; }
+    .comment-avatar { width: 34px; height: 34px; }
+    .comment-replies { margin-left: 0; padding-left: 12px; }
+    .comment-compose-foot { align-items: flex-end; }
+}

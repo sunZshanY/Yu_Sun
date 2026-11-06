@@ -12,6 +12,13 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 POST = {"id": 1, "title": "Fresh article", "date": "2026-09-24",
         "content": "Updated article body.", "tags": ["test"]}
+USER = {"id": 7, "username": "alice", "displayName": "Alice",
+        "avatarUrl": "", "role": "user"}
+COMMENT = {
+    "id": 101, "post_id": 1, "parent_id": None, "content": "Nice article!",
+    "status": "visible", "created_at": "2026-01-01T00:00:00.000Z",
+    "updated_at": "2026-01-01T00:00:00.000Z", "user": USER, "replies": []
+}
 
 
 class StaticHandler(SimpleHTTPRequestHandler):
@@ -66,78 +73,124 @@ class FrontendTests(unittest.TestCase):
     def api(self, payload):
         self.context.route("**/api/posts-data", lambda route: route.fulfill(json=payload))
 
-    def giscus_stub(self):
-        # Exercise the embed boundary locally; never post comments to GitHub in tests.
-        self.context.route("https://giscus.app/client.js", lambda route: route.fulfill(
-            content_type="application/javascript", headers={"Access-Control-Allow-Origin": "*"}, body="""
-            const frame = document.createElement('iframe');
-            frame.className = 'giscus-frame';
-            frame.src = 'https://giscus.app/widget?theme=' + document.currentScript.dataset.theme;
-            document.querySelector('.giscus').appendChild(frame);
-            """))
-        self.context.route("https://giscus.app/widget?*", lambda route: route.fulfill(
-            content_type="text/html", body="""<!doctype html><html><body>
-            <textarea aria-label="Comment draft"></textarea>
-            <script>
-            document.documentElement.dataset.theme = new URL(location.href).searchParams.get('theme');
-            window.addEventListener('message', event => {
-                if (event.source === parent && event.data?.giscus?.setConfig?.theme) {
-                    document.documentElement.dataset.theme = event.data.giscus.setConfig.theme;
-                }
-            });
-            parent.postMessage({giscus: {discussion: {number: 5}}}, '*');
-            </script></body></html>"""))
+    def mock_api(self, pattern, payload, status=200):
+        self.context.unroute(pattern)
+        self.context.route(pattern, lambda route: route.fulfill(
+            status=status, content_type="application/json", body=json.dumps(payload)))
 
-    def test_discussion_loads_on_demand_and_preserves_draft_when_switching_theme(self):
-        self.giscus_stub()
-        self.page.emulate_media(reduced_motion="reduce")
-        self.goto()
-        client = self.page.locator('script[src="https://giscus.app/client.js"]')
-        expect(client).to_have_count(0)
-        self.page.get_by_role("button", name="深色主题", exact=True).click()
-        self.page.locator('[data-panel="discussion"]').click()
-        expect(client).to_have_count(1)
-        expect(client).to_have_attribute("data-repo", "sunZshanY/personal_website")
-        expect(client).to_have_attribute("data-mapping", "number")
-        expect(client).to_have_attribute("data-term", "5")
-        frame = self.page.frame_locator('.giscus-frame')
-        expect(frame.locator('html')).to_have_attribute('data-theme', 'dark')
-        expect(self.page.locator('#discussionStatus')).to_be_hidden()
-        draft = frame.get_by_role('textbox', name='Comment draft')
-        draft.fill('Keep my draft')
-        self.page.get_by_role("button", name="浅色主题", exact=True).click()
-        expect(frame.locator('html')).to_have_attribute('data-theme', 'light')
-        self.page.locator('[data-panel="friends-link"]').click()
-        self.page.locator('[data-panel="discussion"]').click()
-        expect(client).to_have_count(1)
-        expect(draft).to_have_value('Keep my draft')
-        for width in [320, 768, 1440]:
-            self.page.set_viewport_size({"width": width, "height": 850})
-            bounds = self.page.locator('.giscus-frame').bounding_box()
-            self.assertGreaterEqual(bounds['x'], 0)
-            self.assertLessEqual(bounds['x'] + bounds['width'], width)
-            expect(self.page.locator('.rinui-topbar')).to_be_in_viewport()
-            expect(self.page.locator('.rinui-statusbar')).to_be_in_viewport()
+    def test_comments_live_under_article_and_require_login(self):
+        self.mock_api("**/api/auth/config", {"github": True, "password": True})
+        self.mock_api("**/api/auth/me", {"user": None})
+        self.mock_api("**/api/comments**", {"comments": [COMMENT], "total": 1})
 
-    def test_discussion_links_and_sign_in_return_open_panel(self):
-        self.giscus_stub()
-        for path in ['home.html#discussion', 'home.html#discussionComments',
-                     'home.html#comments', 'home.html?giscus=test-session']:
+        self.goto("read.html?post=1")
+        expect(self.page.locator("#comments")).to_be_visible()
+        expect(self.page.locator(".article-title")).to_have_text("Hello World")
+        expect(self.page.locator(".comment-content").first).to_have_text("Nice article!")
+        expect(self.page.locator("#commentsCount")).to_have_text("1")
+        expect(self.page.locator("#commentCompose")).to_be_hidden()
+        expect(self.page.locator("#commentsEmpty")).to_be_hidden()
+
+        login = self.page.locator(".comment-login-btn")
+        expect(login).to_be_visible()
+        expect(login).to_contain_text("登录")
+        login.click()
+        expect(self.page.locator("#authModal")).to_be_visible()
+        expect(self.page.get_by_role("button", name="使用 GitHub 登录")).to_be_visible()
+        expect(self.page.locator("#authLoginForm")).to_be_visible()
+
+    def test_home_has_no_discussion_panel(self):
+        self.goto("home.html")
+        expect(self.page.locator('[data-panel="discussion"]')).to_have_count(0)
+        expect(self.page.locator("#discussion")).to_have_count(0)
+        expect(self.page.locator('script[src*="giscus"]')).to_have_count(0)
+
+    def test_auth_pill_opens_login_and_register_modal(self):
+        self.mock_api("**/api/auth/config", {"github": True, "password": True})
+        self.mock_api("**/api/auth/me", {"user": None})
+        for path in ["home.html", "read.html?post=1"]:
             with self.subTest(path=path):
                 self.goto(path)
-                expect(self.page.locator('#discussion')).to_be_visible()
-                expect(self.page.locator('[data-panel="discussion"]')).to_have_attribute('aria-current', 'page')
-                expect(self.page.locator('.giscus-frame')).to_have_count(1)
+                pill = self.page.locator("[data-auth-slot] .auth-pill").first
+                expect(pill).to_be_visible()
+                radius = pill.evaluate("el => parseFloat(getComputedStyle(el).borderRadius)")
+                self.assertGreaterEqual(radius, 16)
 
-    def test_discussion_network_failure_keeps_github_link_available(self):
-        self.goto()
-        self.page.locator('[data-panel="discussion"]').click()
-        expect(self.page.locator('#discussionStatus')).to_contain_text('讨论暂时无法加载')
-        link = self.page.get_by_role('link', name='在 GitHub 中参与')
-        expect(link).to_be_visible()
-        expect(link).to_have_attribute('href', 'https://github.com/sunZshanY/personal_website/discussions/5')
-        expect(self.page.locator('#flm-comment-widget')).to_have_count(0)
-        expect(self.page.locator('script[src*="fakeicp"]')).to_have_count(0)
+                pill.click()
+                expect(self.page.locator("#authModal")).to_be_visible()
+                expect(self.page.get_by_role("button", name="使用 GitHub 登录")).to_be_visible()
+                expect(self.page.locator("#authLoginForm")).to_be_visible()
+
+                self.page.locator('[data-auth-tab="register"]').click()
+                expect(self.page.locator("#authRegisterForm")).to_be_visible()
+                expect(self.page.locator("#authLoginForm")).to_be_hidden()
+
+                self.page.keyboard.press("Escape")
+                expect(self.page.locator("#authModal")).to_be_hidden()
+
+    def test_password_login_updates_topbar(self):
+        self.mock_api("**/api/auth/config", {"github": False, "password": True})
+        self.mock_api("**/api/auth/me", {"user": None})
+        self.mock_api("**/api/auth/salt**", {"salt": "AAAAAAAAAAAAAAAAAAAAAA"})
+        posted = []
+
+        def login_handler(route):
+            posted.append(json.loads(route.request.post_data))
+            route.fulfill(json={"ok": True, "user": USER})
+
+        self.context.unroute("**/api/auth/login")
+        self.context.route("**/api/auth/login", login_handler)
+
+        self.goto("home.html")
+        self.page.locator("[data-auth-slot] .auth-pill").first.click()
+        expect(self.page.locator("#authLoginForm")).to_be_visible()
+        self.page.locator("#authLoginForm input[name=username]").fill("alice")
+        self.page.locator("#authLoginForm input[name=password]").fill("password123")
+        self.page.locator("#authLoginSubmit").click()
+
+        expect(self.page.locator("#authModal")).to_be_hidden(timeout=15000)
+        expect(self.page.locator("[data-auth-slot] .auth-pill").first).to_contain_text("Alice")
+        self.assertEqual(len(posted), 1)
+        self.assertEqual(posted[0]["username"], "alice")
+        self.assertRegex(posted[0]["verifier"], r"^[A-Za-z0-9_-]{43}$")
+
+    def test_logged_in_user_can_post_comment(self):
+        created = dict(COMMENT, id=102, content="Hello from the test")
+        posted = []
+
+        def comments_handler(route):
+            if route.request.method == "POST":
+                posted.append(json.loads(route.request.post_data))
+                route.fulfill(json={"ok": True, "comment": created})
+            else:
+                route.fulfill(json={"comments": [], "total": 0})
+
+        self.mock_api("**/api/auth/config", {"github": True, "password": False})
+        self.mock_api("**/api/auth/me", {"user": USER})
+        self.context.unroute("**/api/comments**")
+        self.context.route("**/api/comments**", comments_handler)
+
+        self.goto("read.html?post=1")
+        expect(self.page.locator("#commentCompose")).to_be_visible()
+        expect(self.page.locator("#commentsEmpty")).to_be_visible()
+
+        self.page.locator("#commentInput").fill("Hello from the test")
+        self.page.locator("#commentSubmit").click()
+        expect(self.page.locator(".comment-content").first).to_have_text("Hello from the test")
+        expect(self.page.locator("#commentsCount")).to_have_text("1")
+        expect(self.page.locator("#commentsEmpty")).to_be_hidden()
+        self.assertEqual(posted, [{
+            "postId": 1,
+            "content": "Hello from the test",
+            "parentId": None
+        }])
+
+    def test_comments_offline_shows_status(self):
+        self.goto("read.html?post=1")
+        expect(self.page.locator("#comments")).to_be_visible()
+        expect(self.page.locator("#commentsStatus")).to_contain_text("评论服务暂不可用")
+        expect(self.page.locator("#commentCompose")).to_be_hidden()
+        expect(self.page.locator(".comment-login-btn")).to_be_visible()
 
     def test_sliding_thumb_and_keyboard_on_both_pages(self):
         for path in ["home.html", "read.html?post=1"]:

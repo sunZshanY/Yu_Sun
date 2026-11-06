@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/read.css">
+    <link rel="stylesheet" href="css/comments.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- 背景层（与首页一致的壁纸） -->
@@ -30,20 +32,23 @@
             </a>
             <span class="read-top-title" id="topTitle">Omiaちゃん的小博客</span>
         </div>
-        <div class="theme-switch" data-theme-switch role="group" aria-label="切换主题">
-          <button type="button" class="theme-switch-option" data-theme-value="light" aria-pressed="true" aria-label="浅色主题" title="浅色主题">
-            <svg class="theme-switch-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
-            </svg>
-            <span class="theme-switch-label">浅色</span>
-          </button>
-          <button type="button" class="theme-switch-option" data-theme-value="dark" aria-pressed="false" aria-label="深色主题" title="深色主题">
-            <svg class="theme-switch-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M20.9 13.3A9 9 0 0 1 10.7 3.1 9 9 0 1 0 20.9 13.3Z"></path>
-            </svg>
-            <span class="theme-switch-label">深色</span>
-          </button>
+        <div class="read-top-actions">
+          <div class="theme-switch" data-theme-switch role="group" aria-label="切换主题">
+            <button type="button" class="theme-switch-option" data-theme-value="light" aria-pressed="true" aria-label="浅色主题" title="浅色主题">
+              <svg class="theme-switch-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+              </svg>
+              <span class="theme-switch-label">浅色</span>
+            </button>
+            <button type="button" class="theme-switch-option" data-theme-value="dark" aria-pressed="false" aria-label="深色主题" title="深色主题">
+              <svg class="theme-switch-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20.9 13.3A9 9 0 0 1 10.7 3.1 9 9 0 1 0 20.9 13.3Z"></path>
+              </svg>
+              <span class="theme-switch-label">深色</span>
+            </button>
+          </div>
+          <div class="auth-slot" data-auth-slot></div>
         </div>
     </header>
 
@@ -52,13 +57,60 @@
         <!-- 动态填充 -->
     </main>
 
+    <!-- 评论区（登录后参与） -->
+    <section class="read-comments" id="comments" aria-labelledby="commentsHeading" hidden>
+        <div class="comments-head">
+            <h2 class="comments-heading" id="commentsHeading">
+                评论
+                <span class="comments-count" id="commentsCount">0</span>
+            </h2>
+            <div class="comments-account" id="commentsAccount"></div>
+        </div>
+
+        <div class="comments-auth" id="commentsAuth" hidden></div>
+
+        <form class="comment-compose" id="commentCompose" hidden>
+            <div class="comment-compose-top">
+                <span class="comment-compose-avatar" id="composeAvatar" aria-hidden="true"></span>
+                <span class="comment-compose-name" id="composeName"></span>
+            </div>
+            <div class="comment-reply-hint" id="commentReplyHint" hidden>
+                回复 <strong id="commentReplyName"></strong>
+                <button type="button" class="comment-text-btn" id="commentReplyCancel">取消</button>
+            </div>
+            <textarea
+                class="comment-input"
+                id="commentInput"
+                maxlength="2000"
+                rows="4"
+                placeholder="友善发言，写下你的想法…"
+                aria-label="评论内容"
+                required
+            ></textarea>
+            <div class="comment-compose-foot">
+                <span class="comment-char-count" id="commentCharCount">0 / 2000</span>
+                <button type="submit" class="comment-submit" id="commentSubmit">发表评论</button>
+            </div>
+            <p class="comment-error" id="commentError" role="alert" hidden></p>
+        </form>
+
+        <p class="comments-status" id="commentsStatus" role="status">正在加载评论…</p>
+        <div class="comments-list" id="commentsList"></div>
+        <div class="comments-empty" id="commentsEmpty" hidden>
+            <p class="comments-empty-title">还没有评论</p>
+            <p class="comments-empty-subtitle">登录后，来留下第一条想法吧。</p>
+        </div>
+    </section>
+
     <!-- 底部操作 -->
     <footer class="read-footer" id="articleFooter">
         <!-- 动态填充 -->
     </footer>
 
     <script src="js/services/posts.js" defer></script>
+    <script src="js/auth.js" defer></script>
     <script src="js/read.js" defer></script>
+    <script src="js/comments.js" defer></script>
     <script>
         // 阅读页背景壁纸（与首页一致的本地壁纸集）
         (function () {

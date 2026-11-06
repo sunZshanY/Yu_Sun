@@ -3,7 +3,7 @@
  * ==============================
  * 背景：雫API (api.imlazy.ink)
  * 数据：data/posts.json（GitHub 托管，每日更新）
- * 讨论：GitHub Discussions / giscus（由 discussion.js 挂载于 #discussion 面板）
+ * 评论：文章阅读页（read.html）底部，登录后参与（js/comments.js）
  * 访客：localStorage 本地存储
  * 设计：Mizuki 风格 Material Design 3
  */

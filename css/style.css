@@ -776,21 +776,6 @@ button { font-family: inherit; }
 }
 
 /* ==========================================================================
-   Discussion 面板
-   ========================================================================== */
-.discussion-intro { font-size: 14px; color: var(--rinui-text-muted); margin: 0 0 12px; }
-.discussion-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-.discussion-card {
-    border-radius: var(--radius-large);
-    background: var(--rinui-surface);
-    border: 1px solid var(--rinui-border);
-    padding: 14px;
-}
-.discussion-status { font-size: 13.5px; color: var(--rinui-text-muted); margin: 0 0 12px; }
-.giscus { min-height: 120px; min-width: 0; }
-.giscus iframe { width: 100%; border: 0; border-radius: var(--rinui-radius-m); }
-
-/* ==========================================================================
    关于面板
    ========================================================================== */
 .about-content { text-align: center; max-width: 640px; margin: 0 auto; }
