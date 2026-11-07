@@ -1,12 +1,12 @@
 /**
  * GET /api/bg
  * ===========
- * Proxies the 雫API (https://api.imlazy.ink/v1/img/) wallpaper.
+ * Proxies the 雫API (https://api.imlazy.ink/img) wallpaper.
  * The API key is read from the SHIZUKU_API_KEY secret (Pages env var /
  * .dev.vars) so it is never exposed to the client or committed to the repo.
  */
 
-const UPSTREAM = 'https://api.imlazy.ink/v1/img/?apikey=';
+const UPSTREAM = 'https://api.imlazy.ink/img?apikey=';
 
 export async function onRequestGet(context) {
   const { env } = context;
