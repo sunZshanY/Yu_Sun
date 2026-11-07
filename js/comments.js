@@ -165,7 +165,7 @@
             chip.appendChild(makeAvatar(state.user, 26));
             chip.appendChild(el('span', 'comments-user-name', state.user.displayName || state.user.username));
             if (state.user.role === 'admin') {
-                chip.appendChild(el('span', 'comment-admin-badge', '管理员'));
+                chip.appendChild(el('span', 'comment-admin-badge', '馆长'));
             }
             accountEl.appendChild(chip);
 
@@ -260,7 +260,7 @@
         meta.appendChild(el('span', 'comment-author', comment.user.displayName || comment.user.username));
         meta.appendChild(el('span', 'comment-handle', '@' + comment.user.username));
         if (comment.user.role === 'admin') {
-            meta.appendChild(el('span', 'comment-admin-badge', '管理员'));
+            meta.appendChild(el('span', 'comment-admin-badge', '馆长'));
         }
         var time = el('time', 'comment-time', formatTime(comment.created_at));
         time.dateTime = comment.created_at || '';

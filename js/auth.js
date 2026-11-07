@@ -350,7 +350,7 @@
                     '<strong id="authAccountName"></strong>' +
                     '<span id="authAccountHandle"></span>' +
                   '</div>' +
-                  '<span class="auth-account-role" id="authAccountRole" hidden>管理员</span>' +
+                  '<span class="auth-account-role" id="authAccountRole" hidden>馆长</span>' +
                 '</div>' +
                 '<p class="auth-account-note">你已登录，可以回到文章页发表评论。</p>' +
                 '<button type="button" class="auth-logout" id="authLogoutBtn">退出登录</button>' +
