@@ -10,25 +10,25 @@
 
 ## 前端结构
 
-| 文件 | 职责 |
-| --- | --- |
-| `index.html`（开屏）/ `home.html` / `read.html` | 页面结构与可访问的浅色／深色切换控件（开屏无主题切换） |
-| `css/splash.css` | 开屏画面样式（壁纸轮播、标题与底部文字动画） |
-| `css/theme.css` | 设计令牌（OKLCH 色相驱动，浅色／深色）、Flex 主题开关与滑块动画 |
-| `css/style.css` / `css/read.css` | 主站／阅读页的 MD3 布局与组件样式（含筛选条与音乐播放器） |
-| `css/comments.css` | 文章评论区样式（登录卡片、发表框、评论树、移动端适配） |
-| `css/auth.css` | 右上角胶囊登录按钮、登录/注册弹窗样式 |
-| `js/theme.js` | 首屏主题恢复、按钮状态、键盘操作与跨标签页同步 |
-| `js/services/posts.js` | 统一文章加载、超时、缓存和并发请求合并 |
-| `js/alert.js` / `js/read.js` | 主站交互（背景壁纸、博客渲染、标签筛选、弹窗）／文章渲染 |
-| `js/music.js` | 右侧悬浮音乐播放器（原创，无依赖，读取 `data/music.json`） |
-| `js/auth.js` | 全站登录状态、右上角按钮、登录/注册弹窗、GitHub 与密码登录 |
-| `js/comments.js` | 文章评论区：登录态、发表、回复、删除、空状态与错误处理 |
-| `js/gate.js` | `?admin` 管理门禁 |
-| `functions/api/auth/*` | GitHub OAuth、用户名/密码注册登录、会话、退出、当前用户 |
-| `functions/api/comments/*` | 评论读取、发表、软删除 |
-| `db/schema.d1.sql` | 线上 Cloudflare D1 表结构 |
-| `db/schema.mysql.sql` | 以后迁移到 Debian + MySQL/MariaDB 用的表结构 |
+| 文件                                            | 职责                                                            |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| `index.html`（开屏）/ `home.html` / `read.html` | 页面结构与可访问的浅色／深色切换控件（开屏无主题切换）          |
+| `css/splash.css`                                | 开屏画面样式（壁纸轮播、标题与底部文字动画）                    |
+| `css/theme.css`                                 | 设计令牌（OKLCH 色相驱动，浅色／深色）、Flex 主题开关与滑块动画 |
+| `css/style.css` / `css/read.css`                | 主站／阅读页的 MD3 布局与组件样式（含筛选条与音乐播放器）       |
+| `css/comments.css`                              | 文章评论区样式（登录卡片、发表框、评论树、移动端适配）          |
+| `css/auth.css`                                  | 右上角胶囊登录按钮、登录/注册弹窗样式                           |
+| `js/theme.js`                                   | 首屏主题恢复、按钮状态、键盘操作与跨标签页同步                  |
+| `js/services/posts.js`                          | 统一文章加载、超时、缓存和并发请求合并                          |
+| `js/alert.js` / `js/read.js`                    | 主站交互（背景壁纸、博客渲染、标签筛选、弹窗）／文章渲染        |
+| `js/music.js`                                   | 右侧悬浮音乐播放器（原创，无依赖，读取 `data/music.json`）      |
+| `js/auth.js`                                    | 全站登录状态、右上角按钮、登录/注册弹窗、GitHub 与密码登录      |
+| `js/comments.js`                                | 文章评论区：登录态、发表、回复、删除、空状态与错误处理          |
+| `js/gate.js`                                    | `?admin` 管理门禁                                               |
+| `functions/api/auth/*`                          | GitHub OAuth、用户名/密码注册登录、会话、退出、当前用户         |
+| `functions/api/comments/*`                      | 评论读取、发表、软删除                                          |
+| `db/schema.d1.sql`                              | 线上 Cloudflare D1 表结构                                       |
+| `db/schema.mysql.sql`                           | 以后迁移到 Debian + MySQL/MariaDB 用的表结构                    |
 
 设计令牌全部集中在 `css/theme.css` 的 `--rinui-*` 变量，主色相由 `--hue`（默认 268 靛蓝）一键控制，浅色／深色通过 `html[data-theme]` 切换。新增页面时，在 `<head>` 中同步加载 `js/theme.js`，并依次引入 `css/theme.css` 和页面样式。
 
@@ -43,7 +43,12 @@
 ```json
 {
   "playlist": [
-    { "title": "歌名", "artist": "歌手", "url": "https://.../song.mp3", "cover": "images/xxx.jpg" }
+    {
+      "title": "歌名",
+      "artist": "歌手",
+      "url": "https://.../song.mp3",
+      "cover": "images/xxx.jpg"
+    }
   ]
 }
 ```
@@ -95,13 +100,13 @@
 
 5. **配置环境变量**（Cloudflare Pages → Settings → Environment variables）：
 
-   | 变量名 | 说明 |
-   | --- | --- |
-   | `PASSWORD_PEPPER` | 原生密码的 pepper，建议设置一个随机长字符串并妥善保存；不设置会回退到 `ADMIN_AUTH_SECRET` |
-   | `GITHUB_CLIENT_ID` | GitHub OAuth App 的 Client ID（可选，启用 GitHub 登录时必填） |
-   | `GITHUB_CLIENT_SECRET` | GitHub OAuth App 的 Client Secret（可选，启用 GitHub 登录时必填） |
-   | `COMMENT_ADMIN_USER` | 管理员用户名，逗号分隔（可选） |
-   | `PUBLIC_ORIGIN` | 自定义域名时固定 OAuth 回调来源（可选） |
+   | 变量名                 | 说明                                                                                      |
+   | ---------------------- | ----------------------------------------------------------------------------------------- |
+   | `PASSWORD_PEPPER`      | 原生密码的 pepper，建议设置一个随机长字符串并妥善保存；不设置会回退到 `ADMIN_AUTH_SECRET` |
+   | `GITHUB_CLIENT_ID`     | GitHub OAuth App 的 Client ID（可选，启用 GitHub 登录时必填）                             |
+   | `GITHUB_CLIENT_SECRET` | GitHub OAuth App 的 Client Secret（可选，启用 GitHub 登录时必填）                         |
+   | `COMMENT_ADMIN_USER`   | 管理员用户名，逗号分隔（可选）                                                            |
+   | `PUBLIC_ORIGIN`        | 自定义域名时固定 OAuth 回调来源（可选）                                                   |
 
 6. 重新部署一次，右上角就会出现胶囊形「登录」按钮，点开即可注册/登录。修改 `COMMENT_ADMIN_USER` 后需要退出并重新登录一次，角色才会刷新。
 
@@ -138,17 +143,17 @@ npx wrangler pages dev . --d1 COMMENT_DB
 
 `functions/` 提供文章、壁纸、访客与评论 API。线上至少要绑定 D1，否则评论与登录不可用；其余按需配置：
 
-| 配置项 | 位置 | 说明 |
-| --- | --- | --- |
-| KV 命名空间绑定 `VISITOR_STORE` | Pages 控制台 → Settings → Bindings → KV namespace | 访客监控、KV 文章缓存与登录/注册限流。**若通过 GitHub 集成自动部署，`wrangler.jsonc` 里的 `kv_namespaces` 不会自动生效，必须在此手动绑定** |
-| D1 数据库绑定 `COMMENT_DB` | Pages 控制台 → Settings → Bindings → D1 database | 评论与用户数据的存储。先执行 `db/schema.d1.sql` 建表 |
-| 环境变量 `PASSWORD_PEPPER` | Settings → Environment variables（建议） | 原生密码的 pepper，设置一次后不要改；不设置会回退到 `ADMIN_AUTH_SECRET` |
-| 环境变量 `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | 同上（可选） | 启用 GitHub 登录时必填；不配置则只显示用户名/密码登录 |
-| 环境变量 `COMMENT_ADMIN_USER` | 同上（可选） | 管理员用户名，逗号分隔；GitHub 登录与原生账号都适用 |
-| 环境变量 `PUBLIC_ORIGIN` | 同上（可选） | 自定义域名时固定 OAuth 回调来源，例如 `https://blog.example.com` |
-| 环境变量 `ADMIN_AUTH_SECRET` | 同上（可选） | 管理员接口共享密钥，**默认已内置**与 `_p/index.html` 一致的密钥，未配置也能正常工作；设置后需与前端 `ADMIN_AUTH` 常量一致 |
-| 环境变量 `SHIZUKU_API_KEY` | 同上（可选） | 雫API 壁纸密钥，缺失时自动回退本地壁纸 |
-| 环境变量 `GITHUB_TOKEN` | 同上（可选） | 发布博文时自动推送 `data/posts.json` + `main.json` 触发部署 |
+| 配置项                                               | 位置                                              | 说明                                                                                                                                       |
+| ---------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| KV 命名空间绑定 `VISITOR_STORE`                      | Pages 控制台 → Settings → Bindings → KV namespace | 访客监控、KV 文章缓存与登录/注册限流。**若通过 GitHub 集成自动部署，`wrangler.jsonc` 里的 `kv_namespaces` 不会自动生效，必须在此手动绑定** |
+| D1 数据库绑定 `COMMENT_DB`                           | Pages 控制台 → Settings → Bindings → D1 database  | 评论与用户数据的存储。先执行 `db/schema.d1.sql` 建表                                                                                       |
+| 环境变量 `PASSWORD_PEPPER`                           | Settings → Environment variables（建议）          | 原生密码的 pepper，设置一次后不要改；不设置会回退到 `ADMIN_AUTH_SECRET`                                                                    |
+| 环境变量 `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | 同上（可选）                                      | 启用 GitHub 登录时必填；不配置则只显示用户名/密码登录                                                                                      |
+| 环境变量 `COMMENT_ADMIN_USER`                        | 同上（可选）                                      | 管理员用户名，逗号分隔；GitHub 登录与原生账号都适用                                                                                        |
+| 环境变量 `PUBLIC_ORIGIN`                             | 同上（可选）                                      | 自定义域名时固定 OAuth 回调来源，例如 `https://blog.example.com`                                                                           |
+| 环境变量 `ADMIN_AUTH_SECRET`                         | 同上（可选）                                      | 管理员接口共享密钥，**默认已内置**与 `_p/index.html` 一致的密钥，未配置也能正常工作；设置后需与前端 `ADMIN_AUTH` 常量一致                  |
+| 环境变量 `SHIZUKU_API_KEY`                           | 同上（可选）                                      | 雫API 壁纸密钥，缺失时自动回退本地壁纸                                                                                                     |
+| 环境变量 `GITHUB_TOKEN`                              | 同上（可选）                                      | 发布博文时自动推送 `data/posts.json` + `main.json` 触发部署                                                                                |
 
 首次发布博文时 `main.json` 若仓库中不存在会自动创建。备案检查（萌ICP/假ICP）抓取的是**根页面**，因此备案号已同时放在 `index.html`（开屏页）与 `home.html` 页脚，删除前请确认检查器要求。
 
@@ -162,3 +167,9 @@ python -m playwright install chromium
 ```
 
 执行 `python -m unittest discover -s tests -v`。测试自动启动临时本地服务器，覆盖开屏进入、滑块中间状态、键盘操作、首屏恢复、跨标签页同步、移动端、减少动画、存储不可用、文章加载回退、右上角登录按钮 / 注册登录弹窗、密码登录以及评论区登录态 / 发表 / 离线状态；不会请求外部评论或统计服务。
+
+---
+
+### LICENCE
+
+本网站由Yu Sun 编写，不可以转为商业用途。

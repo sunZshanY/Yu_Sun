@@ -28,7 +28,7 @@
   var BOSS_NAME_HASH =
     "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
   var BOSS_PASS_HASH =
-    "1d58f2649917f5da75f62da2ecb2ec0021b76960f965b0e19c9f8eddc5f6f833";
+    "cfac3d6afdb6a9b39e0b4c50c9f10a690674867c39cfe73da4c5b8825a2e4fbf";
 
   // 管理员单会话限制（30分钟超时自动释放）
   var SES_TOKEN_KEY = "adm_sesToken";

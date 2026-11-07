@@ -9,8 +9,8 @@
 
     if (!/[\?&]admin/.test(location.search)) return;
 
-    var EXPECT_USER_HASH = 'de55d960aa290c1290fbdb2d5899abb9b85ce6fbc059661fb340783c9e4416bb';
-    var EXPECT_PASS_HASH = 'a32861ede76217e567c65be9d0f7098ab7a019fa711ca988624b3a9d77fe8245';
+    var EXPECT_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+    var EXPECT_PASS_HASH = 'cfac3d6afdb6a9b39e0b4c50c9f10a690674867c39cfe73da4c5b8825a2e4fbf';
 
     function sha256hex(s) {
         return window.crypto.subtle
