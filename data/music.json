@@ -1,11 +1,17 @@
 {
-  "updatedAt": "2026-10-30",
+  "updatedAt": "2026-11-07",
   "playlist": [
     {
       "title": "Never Gonna Give You Up",
       "artist": "Rick Astley",
       "url": "music/never-gonna-give-you-up.mp3",
       "cover": "https://highresolutionmusic.com/files/data/cover/96/95387.jpg"
+    },
+    {
+      "title": "Hong Kong (feat. 王菲季候风)",
+      "artist": "The Weeknd",
+      "url": "music/hong-kong-the-weeknd.mp3",
+      "cover": "https://img1.kuwo.cn/star/albumcover/500/s4s13/81/4039288995.jpg"
     }
   ]
 }
