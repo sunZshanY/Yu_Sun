@@ -1,65 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Omiaちゃん的小博客 -- Hello World" />
+    <meta name="author" content="Omiaちゃん" />
+    <title>Yu Sun 的小博客</title>
+    <link rel="icon" href="images/misaka.jpg" type="image/jpeg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/splash.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Omiaちゃん的小博客 — 编程学习、项目开发与日常生活">
-  <meta name="author" content="Omiaちゃん">
-  <title>Yu Sun 的小博客</title>
-  <link rel="icon" href="images/misaka.jpg" type="image/jpeg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/splash.css">
-</head>
-
-<body>
-  <!-- 壁纸轮播层 -->
-  <div class="wall" aria-hidden="true">
-    <div class="slide" style="background-image:url('images/哥伦比亚.jpg')"></div>
-    <div class="slide" style="background-image:url('images/我推的孩子.jpg')"></div>
-    <div class="slide" style="background-image:url('images/火花.jpg')"></div>
-    <div class="slide" style="background-image:url('images/庄方宜.jpg')"></div>
-    <div class="scrim"></div>
-  </div>
-
-  <!-- 中央标题 -->
-  <div class="stage">
-    <div class="center">
-      <h1 class="title">Hello My name is Yu Sun</h1>
-      <div class="line" aria-hidden="true"></div>
+  <body>
+    <!-- 壁纸轮播层 -->
+    <div class="wall" aria-hidden="true">
+      <div
+        class="slide"
+        style="background-image: url(&quot;images/哥伦比亚.jpg&quot;)"
+      ></div>
+      <div
+        class="slide"
+        style="background-image: url(&quot;images/我推的孩子.jpg&quot;)"
+      ></div>
+      <div
+        class="slide"
+        style="background-image: url(&quot;images/火花.jpg&quot;)"
+      ></div>
+      <div
+        class="slide"
+        style="background-image: url(&quot;images/庄方宜.jpg&quot;)"
+      ></div>
+      <div class="scrim"></div>
     </div>
-  </div>
 
-  <!-- 底部 -->
-  <div class="foot">
-    <span class="hint">点击屏幕进入</span>
-    <p class="welcome">欢迎来到我的网页</p>
-    <p class="icp">
-      <a href="https://icp.gov.moe/?keyword=20266671" target="_blank" rel="noopener noreferrer">萌ICP备20266671号</a>
-      <span class="icp-sep" aria-hidden="true">|</span>
-      <a href="https://fakeicp.top/query.lua?number=1202648" target="_blank" rel="noopener noreferrer">假ICP备1202648号</a>
-    </p>
-  </div>
+    <!-- 中央标题 -->
+    <div class="stage">
+      <div class="center">
+        <h1 class="title">Hello My name is Yu Sun</h1>
+        <div class="line" aria-hidden="true"></div>
+      </div>
+    </div>
 
-  <script>
-    (function () {
-      'use strict';
-      var AUTO_ENTER_MS = 3200;
-      var entered = false;
-      function enter() {
-        if (entered) return;
-        entered = true;
-        location.href = 'home.html';
-      }
-      document.addEventListener('click', enter);
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); }
-      });
-      setTimeout(enter, AUTO_ENTER_MS);
-    })();
-  </script>
-</body>
+    <!-- 底部 -->
+    <div class="foot">
+      <span class="hint">点击屏幕进入</span>
+      <p class="welcome">欢迎来到我的网页</p>
+      <p class="icp">
+        <a
+          href="https://icp.gov.moe/?keyword=20266671"
+          target="_blank"
+          rel="noopener noreferrer"
+          >萌ICP备20266671号</a
+        >
+        <span class="icp-sep" aria-hidden="true">|</span>
+        <a
+          href="https://fakeicp.top/query.lua?number=1202648"
+          target="_blank"
+          rel="noopener noreferrer"
+          >假ICP备1202648号</a
+        >
+      </p>
+    </div>
 
+    <script>
+      (function () {
+        "use strict";
+        var AUTO_ENTER_MS = 3200;
+        var entered = false;
+        function enter() {
+          if (entered) return;
+          entered = true;
+          location.href = "home.html";
+        }
+        document.addEventListener("click", enter);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            enter();
+          }
+        });
+        setTimeout(enter, AUTO_ENTER_MS);
+      })();
+    </script>
+  </body>
 </html>
